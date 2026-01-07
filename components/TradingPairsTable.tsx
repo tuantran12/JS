@@ -74,39 +74,42 @@ export function TradingPairsTable() {
           onClose={() => setSelectedPair(null)}
         />
       )}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader>
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 text-white">
+        <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <CardTitle className="text-white">Trading Pairs</CardTitle>
-          <div className="flex items-center gap-2">
-            <Tabs
-              value={selectedTimeframe}
-              onValueChange={(value) => setSelectedTimeframe(value as TimeFrame)}
-            >
-              <TabsList>
-                <TabsTrigger value="1H">1H</TabsTrigger>
-                <TabsTrigger value="4H">4H</TabsTrigger>
-                <TabsTrigger value="12H">12H</TabsTrigger>
-                <TabsTrigger value="24H">24H</TabsTrigger>
-                <TabsTrigger value="1W">1W</TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-            >
-              <RefreshCw
-                className={cn("h-4 w-4", isRefreshing && "animate-spin")}
-              />
-            </Button>
+            <div>
+              <CardTitle className="text-white text-xl font-bold mb-1">Trading Pairs</CardTitle>
+              <div className="text-xs text-gray-500">
+                Last updated: {timeAgo(lastUpdate)}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <Tabs
+                value={selectedTimeframe}
+                onValueChange={(value) => setSelectedTimeframe(value as TimeFrame)}
+              >
+                <TabsList className="bg-[#1a1a1a] border border-[#FFFF02]/20">
+                  <TabsTrigger value="1H" className="data-[state=active]:bg-[#FFFF02] data-[state=active]:text-[#121212]">1H</TabsTrigger>
+                  <TabsTrigger value="4H" className="data-[state=active]:bg-[#FFFF02] data-[state=active]:text-[#121212]">4H</TabsTrigger>
+                  <TabsTrigger value="12H" className="data-[state=active]:bg-[#FFFF02] data-[state=active]:text-[#121212]">12H</TabsTrigger>
+                  <TabsTrigger value="24H" className="data-[state=active]:bg-[#FFFF02] data-[state=active]:text-[#121212]">24H</TabsTrigger>
+                  <TabsTrigger value="1W" className="data-[state=active]:bg-[#FFFF02] data-[state=active]:text-[#121212]">1W</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="bg-[#1a1a1a] border-[#FFFF02]/20 hover:bg-[#FFFF02]/10 hover:border-[#FFFF02] text-white"
+              >
+                <RefreshCw
+                  className={cn("h-4 w-4", isRefreshing && "animate-spin")}
+                />
+              </Button>
+            </div>
           </div>
-        </div>
-        <div className="text-sm text-gray-400">
-          Last updated: {timeAgo(lastUpdate)}
-        </div>
-      </CardHeader>
+        </CardHeader>
       <CardContent>
         {loading ? (
           <div className="space-y-3">
@@ -118,65 +121,71 @@ export function TradingPairsTable() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#FFFF02]/20 text-sm text-gray-400">
-                  <th className="text-left p-3 font-medium">Coin</th>
-                  <th className="text-right p-3 font-medium">Price</th>
-                  <th className="text-right p-3 font-medium">Change</th>
-                  <th className="text-right p-3 font-medium hidden md:table-cell">
+                <tr className="border-b border-[#FFFF02]/20">
+                  <th className="text-left p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Coin</th>
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Price</th>
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Change</th>
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
                     Buy Volume
                   </th>
-                  <th className="text-right p-3 font-medium hidden md:table-cell">
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
                     Sell Volume
                   </th>
-                  <th className="text-right p-3 font-medium hidden lg:table-cell">
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
                     Net Flow
                   </th>
-                  <th className="text-right p-3 font-medium">Actions</th>
+                  <th className="text-right p-4 text-xs font-semibold text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {pairs.map((pair) => (
                   <tr
                     key={pair.symbol}
-                    className="border-b border-[#FFFF02]/10 hover:bg-[#1a1a1a]/50 transition-colors"
+                    className="border-b border-gray-800/50 hover:bg-[#1a1a1a]/30 transition-colors"
                   >
-                    <td className="p-3">
+                    <td className="p-4">
                       <div>
-                        <div className="font-medium text-white">{pair.name}</div>
-                        <div className="text-sm text-gray-400">
+                        <div className="font-semibold text-white text-base">{pair.name}</div>
+                        <div className="text-sm text-gray-500 mt-0.5">
                           {pair.symbol.replace("USDT", "")}
                         </div>
                       </div>
                     </td>
-                    <td className="text-right p-3 font-mono text-white">
-                      {formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}
+                    <td className="text-right p-4">
+                      <div className="font-mono text-white text-base font-semibold">
+                        {formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}
+                      </div>
                     </td>
-                    <td className="text-right p-3">
-                      <div className="flex flex-col items-end">
+                    <td className="text-right p-4">
+                      <div className="flex flex-col items-end gap-1">
                         <span
                           className={cn(
-                            "font-medium",
+                            "font-semibold text-base",
                             getChangeColor(pair.priceChangePercent)
                           )}
                         >
                           {formatPercentage(pair.priceChangePercent)}
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-500">
                           {pair.priceChange >= 0 ? "+" : ""}
                           {formatCurrency(pair.priceChange, pair.price < 1 ? 4 : 2)}
                         </span>
                       </div>
                     </td>
-                    <td className="text-right p-3 hidden md:table-cell text-green-500">
-                      {formatCompactCurrency(pair.buyVolume)}
+                    <td className="text-right p-4 hidden md:table-cell">
+                      <div className="font-semibold text-green-500 text-sm">
+                        {formatCompactCurrency(pair.buyVolume)}
+                      </div>
                     </td>
-                    <td className="text-right p-3 hidden md:table-cell text-red-500">
-                      {formatCompactCurrency(pair.sellVolume)}
+                    <td className="text-right p-4 hidden md:table-cell">
+                      <div className="font-semibold text-red-500 text-sm">
+                        {formatCompactCurrency(pair.sellVolume)}
+                      </div>
                     </td>
-                    <td className="text-right p-3 hidden lg:table-cell">
+                    <td className="text-right p-4 hidden lg:table-cell">
                       <span
                         className={cn(
-                          "font-medium",
+                          "font-semibold text-sm",
                           getChangeColor(pair.netFlow)
                         )}
                       >
@@ -184,19 +193,17 @@ export function TradingPairsTable() {
                         {formatCompactCurrency(Math.abs(pair.netFlow))}
                       </span>
                     </td>
-                    <td className="text-right p-3">
-                      <div className="relative group">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="bg-[#1a1a1a] border-[#FFFF02]/20 text-white hover:bg-[#FFFF02]/10 hover:border-[#FFFF02]"
-                          onMouseEnter={() => setSelectedPair(pair)}
-                          onClick={() => setSelectedPair(pair)}
-                        >
-                          <TrendingUp className="h-3 w-3 mr-1" />
-                          <span className="hidden sm:inline">Chart</span>
-                        </Button>
-                      </div>
+                    <td className="text-right p-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="bg-[#1a1a1a] border-[#FFFF02]/20 text-white hover:bg-[#FFFF02]/10 hover:border-[#FFFF02] transition-all"
+                        onMouseEnter={() => setSelectedPair(pair)}
+                        onClick={() => setSelectedPair(pair)}
+                      >
+                        <TrendingUp className="h-3.5 w-3.5 mr-1.5" />
+                        <span className="hidden sm:inline text-sm">Chart</span>
+                      </Button>
                     </td>
                   </tr>
                 ))}

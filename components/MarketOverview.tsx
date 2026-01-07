@@ -141,7 +141,7 @@ export function MarketOverview() {
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className="h-48 rounded-lg border border-[#FFFF02]/20 bg-[#0a0a0a] animate-pulse"
+            className="h-56 rounded-xl border border-[#FFFF02]/10 bg-[#0a0a0a] animate-pulse"
           />
         ))}
       </div>
@@ -158,170 +158,180 @@ export function MarketOverview() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
       {/* Row 1: Open Interest */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Open Interest</CardTitle>
-          <Activity className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Open Interest</CardTitle>
+            <Activity className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-1">
+        <CardContent className="space-y-3">
+          <div className="text-3xl font-bold text-white">
             {formatCompactCurrency(data.openInterest.value)}
           </div>
-          <div className="flex items-center gap-1 text-xs">
+          <div className="flex items-center gap-2">
             {data.openInterest.changePercent24h >= 0 ? (
-              <TrendingUp className="h-3 w-3 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-green-500" />
             ) : (
-              <TrendingDown className="h-3 w-3 text-red-500" />
+              <TrendingDown className="h-4 w-4 text-red-500" />
             )}
             <span className={cn(
+              "text-sm font-semibold",
               data.openInterest.changePercent24h >= 0 ? "text-green-500" : "text-red-500"
             )}>
               {formatPercentage(data.openInterest.changePercent24h)}
             </span>
-            <span className="text-gray-400">
+            <span className="text-xs text-gray-500">
               ({formatCompactCurrency(data.openInterest.change24h)})
             </span>
           </div>
-          <div className="text-xs text-gray-400 mt-2">24H Change</div>
+          <div className="text-xs text-gray-500 font-medium">24H Change</div>
         </CardContent>
       </Card>
 
       {/* Row 1: Liquidation Stats */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Liquidation Stats</CardTitle>
-          <DollarSign className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Liquidation Stats</CardTitle>
+            <DollarSign className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-1">
+        <CardContent className="space-y-3">
+          <div className="text-3xl font-bold text-white">
             {formatCompactCurrency(data.liquidations.total)}
           </div>
-          <div className="flex items-center gap-1 text-xs mb-3">
+          <div className="flex items-center gap-2">
             {data.liquidations.changePercent24h && data.liquidations.changePercent24h >= 0 ? (
-              <TrendingUp className="h-3 w-3 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-green-500" />
             ) : (
-              <TrendingDown className="h-3 w-3 text-red-500" />
+              <TrendingDown className="h-4 w-4 text-red-500" />
             )}
             <span className={cn(
+              "text-sm font-semibold",
               data.liquidations.changePercent24h && data.liquidations.changePercent24h >= 0 ? "text-green-500" : "text-red-500"
             )}>
               {data.liquidations.changePercent24h ? formatPercentage(data.liquidations.changePercent24h) : "0%"}
             </span>
           </div>
-          <div className="flex gap-4 text-xs">
-            <div>
-              <span className="text-green-500 font-medium">LONG: </span>
-              <span className="text-gray-300">{formatCompactCurrency(data.liquidations.long)}</span>
+          <div className="flex gap-4 pt-2 border-t border-gray-800">
+            <div className="flex-1">
+              <div className="text-xs text-gray-500 mb-1">LONG</div>
+              <div className="text-base font-semibold text-green-500">
+                {formatCompactCurrency(data.liquidations.long)}
+              </div>
             </div>
-            <div>
-              <span className="text-red-500 font-medium">SHORT: </span>
-              <span className="text-gray-300">{formatCompactCurrency(data.liquidations.short)}</span>
+            <div className="flex-1">
+              <div className="text-xs text-gray-500 mb-1">SHORT</div>
+              <div className="text-base font-semibold text-red-500">
+                {formatCompactCurrency(data.liquidations.short)}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Row 1: RSI Average Line */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">RSI Average Line</CardTitle>
-          <BarChart3 className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">RSI Average Line</CardTitle>
+            <BarChart3 className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-3">
+        <CardContent className="space-y-3">
+          <div className="text-3xl font-bold text-white">
             {data.rsi.averageRSI.toFixed(2)}
           </div>
-          <div className="relative h-2 bg-gray-800 rounded-full overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-[30%] bg-red-500"></div>
-            <div className="absolute left-[30%] top-0 h-full w-[40%] bg-yellow-500"></div>
-            <div className="absolute left-[70%] top-0 h-full w-[30%] bg-green-500"></div>
+          <div className="relative h-3 bg-gray-900 rounded-full overflow-hidden border border-gray-800">
+            <div className="absolute left-0 top-0 h-full w-[30%] bg-red-500/30"></div>
+            <div className="absolute left-[30%] top-0 h-full w-[40%] bg-yellow-500/30"></div>
+            <div className="absolute left-[70%] top-0 h-full w-[30%] bg-green-500/30"></div>
             <div
-              className="absolute top-0 h-full bg-blue-500 transition-all duration-500"
+              className="absolute top-0 h-full bg-blue-500 transition-all duration-500 rounded-full"
               style={{ width: `${data.rsi.averageRSI}%` }}
             ></div>
           </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <div className="flex justify-between text-xs text-gray-500 font-medium">
             <span>0</span>
             <span>30</span>
             <span>70</span>
             <span>100</span>
           </div>
           {data.rsi.averageRSI <= 30 && (
-            <div className="text-xs text-green-500 mt-2">超卖 (Oversold)</div>
+            <div className="text-xs text-green-500 font-medium pt-1">超卖 (Oversold)</div>
           )}
         </CardContent>
       </Card>
 
       {/* Row 1: Altcoin Season */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Altcoin Season</CardTitle>
-          <PieChart className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Altcoin Season</CardTitle>
+            <PieChart className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-1">
+        <CardContent className="space-y-3">
+          <div className="text-3xl font-bold text-white">
             {data.altcoinSeason.index.toFixed(0)}
           </div>
-          <div className="flex items-center gap-1 text-xs mb-3">
-            <span className="text-gray-400">+0.00%</span>
-          </div>
-          <div className="relative h-3 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 rounded-full overflow-hidden">
-            <div className="absolute left-0 top-0 h-full w-[25%] bg-blue-600"></div>
-            <div className="absolute left-[25%] top-0 h-full w-[25%] bg-purple-600"></div>
-            <div className="absolute left-[50%] top-0 h-full w-[25%] bg-yellow-500"></div>
-            <div className="absolute left-[75%] top-0 h-full w-[25%] bg-green-600"></div>
+          <div className="relative h-4 bg-gradient-to-r from-blue-600 via-purple-600 to-green-600 rounded-full overflow-hidden border border-gray-800">
             <div
-              className="absolute top-0 h-full w-0.5 bg-black shadow-lg transition-all duration-500"
+              className="absolute top-0 h-full w-1 bg-white shadow-lg transition-all duration-500 z-10"
               style={{ left: `${data.altcoinSeason.index}%` }}
             ></div>
           </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <div className="flex justify-between text-xs text-gray-500 font-medium">
             <span>Bitcoin Season</span>
             <span>Altcoin Season</span>
           </div>
-          <div className="text-xs text-gray-400 mt-2">{data.altcoinSeason.label}</div>
+          <div className="text-xs text-gray-400 pt-1">{data.altcoinSeason.label}</div>
         </CardContent>
       </Card>
 
       {/* Row 2: Fear & Greed Index */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Fear & Greed Index</CardTitle>
-          <Gauge className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Fear & Greed Index</CardTitle>
+            <Gauge className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-1">
+        <CardContent className="space-y-4">
+          <div className="text-3xl font-bold text-white">
             {data.fearGreed.value}
           </div>
-          <div className="flex items-center gap-1 text-xs mb-4">
+          <div className="flex items-center gap-2">
             {data.fearGreed.changePercent24h && data.fearGreed.changePercent24h >= 0 ? (
-              <TrendingUp className="h-3 w-3 text-green-500" />
+              <TrendingUp className="h-4 w-4 text-green-500" />
             ) : (
-              <TrendingDown className="h-3 w-3 text-red-500" />
+              <TrendingDown className="h-4 w-4 text-red-500" />
             )}
             <span className={cn(
+              "text-sm font-semibold",
               data.fearGreed.changePercent24h && data.fearGreed.changePercent24h >= 0 ? "text-green-500" : "text-red-500"
             )}>
               {data.fearGreed.changePercent24h ? formatPercentage(data.fearGreed.changePercent24h) : "0%"}
             </span>
           </div>
           {/* Semi-circular Gauge */}
-          <div className="relative w-full h-24 mb-2">
+          <div className="relative w-full h-20">
             <svg className="w-full h-full" viewBox="0 0 200 100">
               <path
                 d="M 20 80 A 80 80 0 0 1 180 80"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="12"
-                className="text-gray-800"
+                strokeWidth="10"
+                className="text-gray-900"
               />
               <path
                 d="M 20 80 A 80 80 0 0 1 180 80"
                 fill="none"
                 stroke="url(#gauge-gradient)"
-                strokeWidth="12"
+                strokeWidth="10"
                 strokeDasharray={`${(data.fearGreed.value / 100) * 251.2} 251.2`}
                 strokeLinecap="round"
                 className="transition-all duration-500"
@@ -334,7 +344,7 @@ export function MarketOverview() {
                 </linearGradient>
               </defs>
             </svg>
-            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-xs text-gray-400">
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-xs text-gray-400 font-medium">
               {data.fearGreed.classification}
             </div>
           </div>
@@ -342,42 +352,43 @@ export function MarketOverview() {
       </Card>
 
       {/* Row 2: Long/Short Ratio */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Long/Short Ratio</CardTitle>
-          <PieChart className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Long/Short Ratio</CardTitle>
+            <PieChart className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-white mb-1">
+        <CardContent className="space-y-4">
+          <div className="text-3xl font-bold text-white">
             {data.longShortRatio.averageRatio.toFixed(2)}
           </div>
-          <div className="text-xs text-gray-400 mb-3">3 Exchange Average L/S Ratio</div>
+          <div className="text-xs text-gray-500 font-medium">3 Exchange Average L/S Ratio</div>
           
           {/* Long/Short Distribution Bar */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between text-xs mb-1">
-              <span className="text-green-500">Long {((data.longShortRatio.averageRatio / (1 + data.longShortRatio.averageRatio)) * 100).toFixed(1)}%</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-green-500 font-semibold">Long {((data.longShortRatio.averageRatio / (1 + data.longShortRatio.averageRatio)) * 100).toFixed(1)}%</span>
               <span className="text-gray-400">Short {((1 / (1 + data.longShortRatio.averageRatio)) * 100).toFixed(1)}%</span>
             </div>
-            <div className="h-2 bg-gray-800 rounded-full overflow-hidden flex">
+            <div className="h-2.5 bg-gray-900 rounded-full overflow-hidden border border-gray-800">
               <div
-                className="bg-green-500 h-full"
+                className="bg-green-500 h-full transition-all duration-300"
                 style={{ width: `${(data.longShortRatio.averageRatio / (1 + data.longShortRatio.averageRatio)) * 100}%` }}
               ></div>
-              <div className="bg-gray-600 h-full flex-1"></div>
             </div>
           </div>
 
           {/* Exchange Data */}
-          <div className="space-y-1 text-xs">
-            <div className="text-gray-400 mb-2">EXCHANGE DATA:</div>
+          <div className="space-y-2 pt-2 border-t border-gray-800">
+            <div className="text-xs text-gray-500 font-semibold uppercase">Exchange Data</div>
             {data.longShortRatio.byExchange.slice(0, 3).map((exchange) => (
-              <div key={exchange.exchange} className="flex justify-between">
-                <span className="text-gray-300">{exchange.exchange}:</span>
+              <div key={exchange.exchange} className="flex justify-between text-xs">
+                <span className="text-gray-400">{exchange.exchange}:</span>
                 <span>
-                  <span className="text-green-500">{exchange.longAccount.toFixed(1)}%</span>
-                  {" / "}
-                  <span className="text-red-500">{exchange.shortAccount.toFixed(1)}%</span>
+                  <span className="text-green-500 font-medium">{exchange.longAccount.toFixed(1)}%</span>
+                  <span className="text-gray-600 mx-1">/</span>
+                  <span className="text-red-500 font-medium">{exchange.shortAccount.toFixed(1)}%</span>
                 </span>
               </div>
             ))}
@@ -386,71 +397,75 @@ export function MarketOverview() {
       </Card>
 
       {/* Row 2: US BTC-ETF Data Overview */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">US BTC-ETF Data Overview</CardTitle>
-          <TrendingUp className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">US BTC-ETF Data</CardTitle>
+            <TrendingUp className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2 text-sm">
+        <CardContent className="space-y-3">
+          <div className="space-y-2">
             <div>
-              <div className="text-gray-400 text-xs">Cumulative Total Net Inflow</div>
+              <div className="text-xs text-gray-500 mb-1">Cumulative Total Net Inflow</div>
               <div className="text-lg font-bold text-green-500">
                 {formatCompactCurrency(data.etf.cumulativeInflow)}
               </div>
             </div>
             <div>
-              <div className="text-gray-400 text-xs">Average Daily Net Inflow</div>
+              <div className="text-xs text-gray-500 mb-1">Average Daily Net Inflow</div>
               <div className="text-lg font-bold text-green-500">
                 {formatCompactCurrency(data.etf.dailyAverage)}
               </div>
             </div>
             <div>
-              <div className="text-gray-400 text-xs">Total Net Asset Value</div>
+              <div className="text-xs text-gray-500 mb-1">Total Net Asset Value</div>
               <div className="text-lg font-bold text-white">
                 {formatCompactCurrency(data.etf.totalNav)}
               </div>
             </div>
-            <div className="pt-2 border-t border-gray-800">
-              <div className="text-gray-400 text-xs">Daily Total Net Inflow</div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-green-500">
-                  {data.etf.dailyNetFlow ? formatCompactCurrency(data.etf.dailyNetFlow) : formatCompactCurrency(data.etf.dailyAverage)}
+          </div>
+          <div className="pt-3 border-t border-gray-800">
+            <div className="text-xs text-gray-500 mb-1">Daily Total Net Inflow</div>
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-green-500">
+                {data.etf.dailyNetFlow ? formatCompactCurrency(data.etf.dailyNetFlow) : formatCompactCurrency(data.etf.dailyAverage)}
+              </span>
+              {data.etf.dailyNetFlowChange && (
+                <span className={cn(
+                  "text-xs font-semibold",
+                  data.etf.dailyNetFlowChange >= 0 ? "text-green-500" : "text-red-500"
+                )}>
+                  vs. Previous {formatPercentage(data.etf.dailyNetFlowChange)}
                 </span>
-                {data.etf.dailyNetFlowChange && (
-                  <span className={cn(
-                    "text-xs",
-                    data.etf.dailyNetFlowChange >= 0 ? "text-green-500" : "text-red-500"
-                  )}>
-                    vs. Previous {formatPercentage(data.etf.dailyNetFlowChange)}
-                  </span>
-                )}
-              </div>
+              )}
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Row 2: Funding Rate */}
-      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-gray-300">Funding Rate</CardTitle>
-          <Activity className="h-4 w-4 text-[#FFFF02]" />
+      <Card className="bg-gradient-to-br from-[#0a0a0a] to-[#050505] border-[#FFFF02]/20 hover:border-[#FFFF02]/40 transition-all duration-300">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-gray-300 uppercase tracking-wide">Funding Rate</CardTitle>
+            <Activity className="h-4 w-4 text-[#FFFF02]/60" />
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="mb-4">
-            <div className="text-gray-400 text-xs mb-1">8H Average</div>
-            <div className="text-xl font-bold text-green-500">
+        <CardContent className="space-y-4">
+          <div>
+            <div className="text-xs text-gray-500 mb-1">8H Average</div>
+            <div className="text-2xl font-bold text-green-500">
               {formatPercentage(data.fundingRate.average8h * 100)}
             </div>
           </div>
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2.5 pt-2 border-t border-gray-800">
             {data.fundingRate.byExchange.map((exchange) => (
               <div key={`${exchange.exchange}-${exchange.symbol}-${exchange.marginType}`}>
-                <div className="text-gray-400">
-                  {exchange.exchange} BTC/{exchange.symbol.includes("USD") ? "USD" : "USDT"} {exchange.marginType} Funding Rate
+                <div className="text-xs text-gray-500 mb-0.5">
+                  {exchange.exchange} BTC/{exchange.symbol.includes("USD") ? "USD" : "USDT"} {exchange.marginType}
                 </div>
-                <div className="text-green-500 font-medium">
+                <div className="text-sm font-semibold text-green-500">
                   {formatPercentage(exchange.rate * 100)}
                 </div>
               </div>

@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, TrendingUp } from "lucide-react";
+import { Clock } from "lucide-react";
 import { timeAgo } from "@/lib/utils";
 
 const articles = [
@@ -59,38 +59,41 @@ export default function ArticlesPage() {
                 key={article.id}
                 className="hover:shadow-lg transition-shadow cursor-pointer bg-[#0a0a0a] border-[#FFFF02]/20 text-white"
               >
-              <CardHeader>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary">{article.category}</Badge>
-                  {article.isVip && (
-                    <Badge className="bg-gradient-to-r from-yellow-500 to-orange-500">
-                      VIP
+                <CardHeader>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge variant="secondary" className="bg-gray-800 text-gray-300">
+                      {article.category}
                     </Badge>
-                  )}
-                </div>
-                <CardTitle className="text-lg line-clamp-2 text-white">
-                  {article.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-                  {article.description}
-                </p>
-                <div className="space-y-2 text-sm text-gray-400">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{article.author}</span>
+                    {article.isVip && (
+                      <Badge className="bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212]">
+                        VIP
+                      </Badge>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
-                      {article.readTime}
-                    </span>
-                    <span>{timeAgo(article.publishedAt)}</span>
+                  <CardTitle className="text-lg line-clamp-2 text-white">
+                    {article.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-400 text-sm mb-4 line-clamp-3">
+                    {article.description}
+                  </p>
+                  <div className="space-y-2 text-sm text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium">{article.author}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {article.readTime}
+                      </span>
+                      <span>{timeAgo(article.publishedAt)}</span>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     </div>

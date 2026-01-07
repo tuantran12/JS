@@ -1,4 +1,4 @@
-import { type ClassValue, clsx } from "clsx";
+himport { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 /**
@@ -23,7 +23,7 @@ export function formatCurrency(value: number, decimals: number = 2): string {
 /**
  * Format number as compact currency (e.g., $1.2B)
  */
-export function formatCompactCurrency(value: number): string {
+export function formatCompactCurrency(value: number): string {h(value / 1e9).toFixed(2)  
   if (value >= 1e9) {
     return `$${(value / 1e9).toFixed(2)}B`;
   } else if (value >= 1e6) {

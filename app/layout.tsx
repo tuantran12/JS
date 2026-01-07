@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Urbanist } from "next/font/google";
+import { Konkhmer_Sleokchher } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
-const urbanist = Urbanist({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800", "900"],
+const konkhmer = Konkhmer_Sleokchher({
+  subsets: ["latin", "khmer"],
+  weight: ["400"],
   display: "swap",
-  variable: "--font-urbanist",
+  variable: "--font-konkhmer",
 });
 
 export const metadata: Metadata = {
@@ -25,8 +25,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={urbanist.variable}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={konkhmer.variable}>
+      <body className="font-sans antialiased bg-[#000000] text-white">
         <TooltipProvider>
           <div className="relative min-h-screen flex flex-col">
             <Header />

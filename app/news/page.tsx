@@ -66,18 +66,19 @@ const newsArticles = [
 
 export default function NewsPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Crypto News</h1>
-          <p className="text-muted-foreground mt-2">
-            Latest news and updates from the cryptocurrency world
-          </p>
-        </div>
+    <div className="bg-[#000000] text-white min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Crypto News</h1>
+            <p className="text-gray-400 mt-2">
+              Latest news and updates from the cryptocurrency world
+            </p>
+          </div>
 
-        <div className="grid gap-4">
-          {newsArticles.map((article) => (
-            <Card key={article.id} className="hover:shadow-md transition-shadow">
+          <div className="grid gap-4">
+            {newsArticles.map((article) => (
+              <Card key={article.id} className="hover:shadow-md transition-shadow bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
@@ -89,18 +90,18 @@ export default function NewsPage() {
                         </Badge>
                       )}
                     </div>
-                    <CardTitle className="text-xl hover:text-primary transition-colors">
-                      <a href={article.url} target="_blank" rel="noopener noreferrer">
+                    <CardTitle className="text-xl hover:text-[#FFFF02] transition-colors text-white">
+                      <a href={article.url} target="_blank" rel="noopener noreferrer" className="hover:text-[#FFFF02]">
                         {article.title}
                       </a>
                     </CardTitle>
                   </div>
-                  <ExternalLink className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <ExternalLink className="h-5 w-5 text-gray-400 flex-shrink-0" />
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground mb-4">{article.description}</p>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <p className="text-gray-400 mb-4">{article.description}</p>
+                <div className="flex items-center gap-4 text-sm text-gray-400">
                   <span className="font-medium">{article.source}</span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-3 w-3" />
@@ -110,6 +111,7 @@ export default function NewsPage() {
               </CardContent>
             </Card>
           ))}
+          </div>
         </div>
       </div>
     </div>

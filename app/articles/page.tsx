@@ -43,21 +43,22 @@ const articles = [
 
 export default function ArticlesPage() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Educational Articles</h1>
-          <p className="text-muted-foreground mt-2">
-            In-depth guides and analysis from crypto experts
-          </p>
-        </div>
+    <div className="bg-[#000000] text-white min-h-screen">
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white">Educational Articles</h1>
+            <p className="text-gray-400 mt-2">
+              In-depth guides and analysis from crypto experts
+            </p>
+          </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <Card
-              key={article.id}
-              className="hover:shadow-lg transition-shadow cursor-pointer"
-            >
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => (
+              <Card
+                key={article.id}
+                className="hover:shadow-lg transition-shadow cursor-pointer bg-[#0a0a0a] border-[#FFFF02]/20 text-white"
+              >
               <CardHeader>
                 <div className="flex items-center gap-2 mb-2">
                   <Badge variant="secondary">{article.category}</Badge>
@@ -67,15 +68,15 @@ export default function ArticlesPage() {
                     </Badge>
                   )}
                 </div>
-                <CardTitle className="text-lg line-clamp-2">
+                <CardTitle className="text-lg line-clamp-2 text-white">
                   {article.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
+                <p className="text-gray-400 text-sm mb-4 line-clamp-3">
                   {article.description}
                 </p>
-                <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="space-y-2 text-sm text-gray-400">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">{article.author}</span>
                   </div>

@@ -5,22 +5,10 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 
 export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   return (
     <>
-      {/* Desktop Header - Futuristic */}
-      <header className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-[#FFFF02]/20' : 'bg-transparent'
-      }`}>
+      {/* Desktop Header - Always Dark Mode */}
+      <header className="hidden md:block fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-[#FFFF02]/20">
         <div className="container mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -40,6 +28,13 @@ export function Header() {
 
             {/* Navigation */}
             <nav className="flex items-center gap-8 lg:gap-12">
+              <Link 
+                href="/analytics" 
+                className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
+              >
+                <span className="relative z-10">Analytics</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFFF02] group-hover:w-full transition-all duration-300"></span>
+              </Link>
               <Link 
                 href="https://blowfi.com/white-paper" 
                 className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
@@ -112,14 +107,14 @@ export function Header() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#FFFF02]/20">
         <div className="container mx-auto px-4">
           <nav className="flex items-center justify-around py-3">
+            <Link href="/analytics" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
+              Analytics
+            </Link>
             <Link href="https://blowfi.com/white-paper" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               White Paper
             </Link>
             <Link href="#" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               Document
-            </Link>
-            <Link href="#" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
-              Partner
             </Link>
           </nav>
         </div>

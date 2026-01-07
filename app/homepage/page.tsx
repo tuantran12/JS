@@ -57,7 +57,7 @@ function HeroSection() {
               </span>
             </div>
             
-            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9]">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight">
               <span className="text-white block">Trade</span>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] via-[#FFFF33] to-[#FFFF02] block animate-gradient">
                 Smarter
@@ -65,7 +65,7 @@ function HeroSection() {
               <span className="text-white block">with AI</span>
             </h1>
             
-            <p className="text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               Effortless crypto trading through intelligent AI agents. Combine natural language prompts with automated execution—no coding required.
             </p>
             
@@ -127,13 +127,13 @@ function AboutSection() {
       <div className="container mx-auto max-w-5xl">
         <div className="text-center space-y-10">
           <div className="inline-block">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white">
               What is <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] to-[#FFFF33]">SENKAI</span>?
             </h2>
           </div>
           <div className="relative">
             <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-10"></div>
-            <p className="relative text-xl md:text-2xl lg:text-3xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="relative text-base md:text-lg lg:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
               SENKAI enables effortless crypto trading through intelligent AI agents. By combining natural language prompts with automated execution, we eliminate technical barriers and emotional trading. Trade smarter with AI-powered bots, copy proven strategies, and earn trading credit through staking—all without writing a single line of code.
             </p>
           </div>
@@ -191,11 +191,11 @@ function FeaturesSection() {
   return (
     <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-b from-[#000000] via-[#0a0a0a] to-[#000000]">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-20 md:mb-24">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
             Why Choose <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] to-[#FFFF33]">SENKAI</span>?
           </h2>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
             Everything you need for intelligent crypto trading in one platform
           </p>
         </div>
@@ -213,11 +213,11 @@ function FeaturesSection() {
               <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="text-7xl mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">{feature.icon}</div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white mb-5 group-hover:text-[#FFFF02] transition-colors duration-300">
-                  {feature.title}
-                </h3>
-                <p className="text-gray-400 mb-6 leading-relaxed text-lg md:text-xl">
+              <div className="text-5xl md:text-6xl mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">{feature.icon}</div>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors duration-300">
+                {feature.title}
+              </h3>
+              <p className="text-gray-400 mb-6 leading-relaxed text-base md:text-lg">
                   {feature.description}
                 </p>
                 <ul className="space-y-3">
@@ -270,11 +270,11 @@ function HowItWorksSection() {
   return (
     <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-20 md:mb-24">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
             How It <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] to-[#FFFF33]">Works</span>
           </h2>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
             Get started in 5 simple steps
           </p>
         </div>
@@ -323,10 +323,10 @@ function HowItWorksSection() {
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
           
           <div className="relative z-10">
-            <h3 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#121212] mb-8">
+            <h3 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#121212] mb-6">
               Ready to Start Trading?
             </h3>
-            <p className="text-[#121212] font-semibold mb-10 text-xl md:text-2xl">
+            <p className="text-[#121212] font-semibold mb-8 text-lg md:text-xl">
               Connect your wallet and start automating now!
             </p>
             <Link
@@ -351,11 +351,11 @@ function TokenUtilitySection() {
   return (
     <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-b from-[#0a0a0a] via-[#000000] to-[#0a0a0a]">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-20 md:mb-24">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
             Token <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] to-[#FFFF33]">Utility</span>
           </h2>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
             SENKAI&apos;s token model powers AI trading, staking, and credit-based liquidity, ensuring seamless transactions and sustainable growth.
           </p>
         </div>
@@ -374,11 +374,11 @@ function TokenUtilitySection() {
               <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-                <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors">
+                <div className="text-5xl mb-6 transform group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
+                <h3 className="text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-gray-400 text-lg leading-relaxed">
+                <p className="text-gray-400 text-base leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -422,11 +422,11 @@ function RoadmapSection() {
   return (
     <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-20 md:mb-24">
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8">
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
             Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFFF02] to-[#FFFF33]">Roadmap</span>
           </h2>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
             Building the future of AI-powered crypto trading
           </p>
         </div>
@@ -481,10 +481,10 @@ function CTASection() {
           <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/20 rounded-full blur-3xl"></div>
           
           <div className="relative z-10">
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-[#121212] mb-10">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-[#121212] mb-6">
               Start Trading Smarter with AI
             </h2>
-            <p className="text-xl md:text-2xl text-[#121212] font-semibold mb-12 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-[#121212] font-semibold mb-8 max-w-3xl mx-auto">
               Connect your wallet, trade smarter, and maximize profits with AI automation.
             </p>
             <div className="flex flex-col sm:flex-row gap-5 justify-center">

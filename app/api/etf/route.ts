@@ -44,11 +44,22 @@ export async function GET() {
     // Calculate total NAV (approximate) - typically 2.0-2.8x cumulative inflow
     const totalNav = latest.cumulativeInflow * (2.0 + Math.random() * 0.8);
 
+    // Calculate daily net flow (latest day's net flow)
+    const dailyNetFlow = latest.netFlow;
+    
+    // Calculate daily net flow change vs previous day
+    const previousDay = historicalData[historicalData.length - 2];
+    const dailyNetFlowChange = previousDay 
+      ? ((latest.netFlow - previousDay.netFlow) / Math.abs(previousDay.netFlow)) * 100 
+      : 0;
+
     return NextResponse.json({
       data: {
         cumulativeInflow: latest.cumulativeInflow,
         dailyAverage,
         totalNav,
+        dailyNetFlow,
+        dailyNetFlowChange,
         historicalData,
       },
       lastUpdated: Date.now(),

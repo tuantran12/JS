@@ -26,8 +26,14 @@ export async function GET() {
 
     const liquidationData = generateLiquidationData();
 
+    // Calculate 24h change (simplified - in production, compare with previous day)
+    // For now, return 0 change as we don't have historical data
     return NextResponse.json({
-      data: liquidationData,
+      data: {
+        ...liquidationData,
+        change24h: 0,
+        changePercent24h: 0,
+      },
       lastUpdated: Date.now(),
     });
   } catch (error) {

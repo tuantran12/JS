@@ -86,14 +86,19 @@ export async function GET() {
       });
     }
 
-    // Simulate 24h change
-    const change24h = totalOI * (Math.random() * 0.04 - 0.02);
-    const changePercent24h = totalOI > 0 ? (change24h / totalOI) * 100 : 0;
+    // Calculate 24h change from individual symbol changes
+    // Since we don't have historical data, calculate from fallback base values
+    const totalChange24h = openInterestData.reduce((sum, item) => {
+      // Try to get change24h from item, otherwise calculate from fallback
+      return sum + (item.change24h || 0);
+    }, 0);
+    
+    const changePercent24h = totalOI > 0 ? (totalChange24h / totalOI) * 100 : 0;
 
     return NextResponse.json({
       data: {
         total: totalOI,
-        change24h,
+        change24h: totalChange24h,
         changePercent24h,
         byExchange: openInterestData,
       },

@@ -22,11 +22,16 @@ export async function GET() {
   try {
     const data = await getFearGreedIndex();
 
+    // Calculate 24h change (simplified - in production, compare with previous day)
+    // For now, return 0 change as we don't have historical data
+    const value = parseInt(data.value);
     return NextResponse.json({
       data: {
-        value: parseInt(data.value),
+        value,
         classification: data.value_classification,
         timestamp: parseInt(data.timestamp) * 1000,
+        change24h: 0,
+        changePercent24h: 0,
       },
       lastUpdated: Date.now(),
     });
@@ -42,8 +47,13 @@ export async function GET() {
     }
 
     // Always return fallback data to prevent app crash
+    const fallbackData = generateFallbackFearGreed();
     return NextResponse.json({
-      data: generateFallbackFearGreed(),
+      data: {
+        ...fallbackData,
+        change24h: 0,
+        changePercent24h: 0,
+      },
       lastUpdated: Date.now(),
       fallback: true,
     });

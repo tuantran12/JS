@@ -287,6 +287,96 @@ export async function getBinanceFundingRate(symbol: string): Promise<any> {
 }
 
 /**
+ * CoinMarketCap API - Get latest cryptocurrency listings
+ */
+export async function getCoinMarketCapListings(limit: number = 100): Promise<any> {
+  const apiKey = process.env.COINMARKETCAP_API_KEY;
+  if (!apiKey) {
+    throw new Error("CoinMarketCap API key not configured");
+  }
+
+  const data = await cachedFetch(
+    `coinmarketcap-listings-${limit}`,
+    async () => {
+      const response = await retryFetch(() =>
+        axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest`, {
+          headers: {
+            "X-CMC_PRO_API_KEY": apiKey,
+          },
+          params: {
+            start: 1,
+            limit,
+            convert: "USD",
+          },
+        })
+      );
+      return response.data.data;
+    },
+    60000 // 1 minute cache
+  );
+  return data;
+}
+
+/**
+ * CoinMarketCap API - Get quotes for specific cryptocurrencies
+ */
+export async function getCoinMarketCapQuotes(symbols: string[]): Promise<any> {
+  const apiKey = process.env.COINMARKETCAP_API_KEY;
+  if (!apiKey) {
+    throw new Error("CoinMarketCap API key not configured");
+  }
+
+  const data = await cachedFetch(
+    `coinmarketcap-quotes-${symbols.join(",")}`,
+    async () => {
+      const response = await retryFetch(() =>
+        axios.get(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest`, {
+          headers: {
+            "X-CMC_PRO_API_KEY": apiKey,
+          },
+          params: {
+            symbol: symbols.join(","),
+            convert: "USD",
+          },
+        })
+      );
+      return response.data.data;
+    },
+    30000 // 30 second cache
+  );
+  return data;
+}
+
+/**
+ * CoinMarketCap API - Get global market metrics
+ */
+export async function getCoinMarketCapGlobalMetrics(): Promise<any> {
+  const apiKey = process.env.COINMARKETCAP_API_KEY;
+  if (!apiKey) {
+    throw new Error("CoinMarketCap API key not configured");
+  }
+
+  const data = await cachedFetch(
+    `coinmarketcap-global`,
+    async () => {
+      const response = await retryFetch(() =>
+        axios.get(`https://pro-api.coinmarketcap.com/v1/global-metrics/quotes/latest`, {
+          headers: {
+            "X-CMC_PRO_API_KEY": apiKey,
+          },
+          params: {
+            convert: "USD",
+          },
+        })
+      );
+      return response.data.data;
+    },
+    60000 // 1 minute cache
+  );
+  return data;
+}
+
+/**
  * Error handler for API calls
  */
 export function handleApiError(error: unknown): string {

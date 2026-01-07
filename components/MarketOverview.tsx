@@ -83,38 +83,28 @@ export function MarketOverview() {
         axios.get("/api/funding-rate"),
       ]);
 
-      // Calculate liquidation change (simplified - in production, track historical)
-      const liqChange = (Math.random() - 0.5) * 0.4; // -20% to +20%
-      const liqChangePercent = liqChange * 100;
-
-      // Calculate fear & greed change
-      const fgChange = (Math.random() - 0.5) * 10; // -5 to +5
-      const fgChangePercent = fgChange / fgRes.data.data.value * 100;
-
-      // Calculate ETF daily net flow change
-      const etfDailyChange = (Math.random() - 0.5) * 0.2; // -10% to +10%
-
+      // Use actual data from API responses, no random calculations
       setData({
         openInterest: {
           value: oiRes.data.data.total,
-          change24h: oiRes.data.data.change24h,
-          changePercent24h: oiRes.data.data.changePercent24h,
+          change24h: oiRes.data.data.change24h || 0,
+          changePercent24h: oiRes.data.data.changePercent24h || 0,
         },
         liquidations: {
           ...liqRes.data.data,
-          change24h: liqRes.data.data.total * liqChange,
-          changePercent24h: liqChangePercent,
+          change24h: liqRes.data.data.change24h || 0,
+          changePercent24h: liqRes.data.data.changePercent24h || 0,
         },
         fearGreed: {
           ...fgRes.data.data,
-          change24h: fgChange,
-          changePercent24h: fgChangePercent,
+          change24h: fgRes.data.data.change24h || 0,
+          changePercent24h: fgRes.data.data.changePercent24h || 0,
         },
         longShortRatio: lsRes.data.data,
         etf: {
           ...etfRes.data.data,
-          dailyNetFlow: etfRes.data.data.dailyAverage * (1 + etfDailyChange),
-          dailyNetFlowChange: etfDailyChange * 100,
+          dailyNetFlow: etfRes.data.data.dailyNetFlow || etfRes.data.data.dailyAverage || 0,
+          dailyNetFlowChange: etfRes.data.data.dailyNetFlowChange || 0,
         },
         rsi: rsiRes.data.data,
         altcoinSeason: altRes.data.data,

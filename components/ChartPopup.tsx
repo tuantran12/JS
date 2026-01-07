@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X, Wifi } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Wifi, WifiOff } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import type { TradingPair } from "@/lib/types";
 import axios from "axios";
+import { createChart, ColorType, IChartApi, ISeriesApi } from "lightweight-charts";
 
 interface ChartPopupProps {
   pair: TradingPair;
@@ -13,60 +14,182 @@ interface ChartPopupProps {
 
 export function ChartPopup({ pair, onClose }: ChartPopupProps) {
   const [timeframe, setTimeframe] = useState("1h");
-  const [chartData, setChartData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [dataSource, setDataSource] = useState<string>("unknown");
+  const chartContainerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<IChartApi | null>(null);
+  const candlestickSeriesRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
+  const volumeSeriesRef = useRef<ISeriesApi<"Histogram"> | null>(null);
 
+  const timeframes = ["1m", "3m", "5m", "15m", "30m", "1h", "4h", "6h", "8h", "12h", "1d", "1w"];
+
+  // Initialize chart
   useEffect(() => {
-    // Fetch chart data (simplified - in production, use a charting library)
+    if (!chartContainerRef.current) return;
+
+    // Create chart
+    const chart = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: "#0a0a0a" },
+        textColor: "#d1d5db",
+      },
+      grid: {
+        vertLines: { color: "#1f2937" },
+        horzLines: { color: "#1f2937" },
+      },
+      width: chartContainerRef.current.clientWidth,
+      height: chartContainerRef.current.clientHeight,
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+        borderColor: "#374151",
+      },
+      rightPriceScale: {
+        borderColor: "#374151",
+      },
+      crosshair: {
+        mode: 1,
+        vertLine: {
+          color: "#FFFF02",
+          width: 1,
+          style: 3,
+          labelBackgroundColor: "#FFFF02",
+        },
+        horzLine: {
+          color: "#FFFF02",
+          width: 1,
+          style: 3,
+          labelBackgroundColor: "#FFFF02",
+        },
+      },
+    });
+
+    // Add candlestick series
+    const candlestickSeries = chart.addCandlestickSeries({
+      upColor: "#10b981",
+      downColor: "#ef4444",
+      borderUpColor: "#10b981",
+      borderDownColor: "#ef4444",
+      wickUpColor: "#10b981",
+      wickDownColor: "#ef4444",
+    });
+
+    // Add volume series
+    const volumeSeries = chart.addHistogramSeries({
+      color: "#26a69a",
+      priceFormat: {
+        type: "volume",
+      },
+      priceScaleId: "",
+      scaleMargins: {
+        top: 0.8,
+        bottom: 0,
+      },
+    });
+
+    chartRef.current = chart;
+    candlestickSeriesRef.current = candlestickSeries;
+    volumeSeriesRef.current = volumeSeries;
+
+    // Handle window resize
+    const handleResize = () => {
+      if (chartContainerRef.current) {
+        chart.applyOptions({
+          width: chartContainerRef.current.clientWidth,
+          height: chartContainerRef.current.clientHeight,
+        });
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      chart.remove();
+    };
+  }, []);
+
+  // Fetch chart data
+  useEffect(() => {
     const fetchChartData = async () => {
       try {
         setLoading(true);
-        // Simulate chart data - in production, fetch from API
-        const mockData = Array.from({ length: 50 }, (_, i) => ({
-          time: Date.now() - (50 - i) * 60 * 60 * 1000,
-          open: pair.price * (0.95 + Math.random() * 0.1),
-          high: pair.price * (0.98 + Math.random() * 0.04),
-          low: pair.price * (0.92 + Math.random() * 0.06),
-          close: pair.price * (0.95 + Math.random() * 0.1),
-          volume: pair.buyVolume + pair.sellVolume,
-        }));
-        setChartData(mockData);
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
-      } finally {
+        setError(null);
+
+        const response = await axios.get("/api/klines", {
+          params: {
+            symbol: pair.symbol,
+            interval: timeframe,
+            limit: 200,
+          },
+        });
+
+        const { data, source } = response.data;
+        setDataSource(source || "unknown");
+
+        if (!data || data.length === 0) {
+          throw new Error("No chart data available");
+        }
+
+        // Update candlestick series
+        if (candlestickSeriesRef.current) {
+          candlestickSeriesRef.current.setData(data);
+        }
+
+        // Update volume series
+        if (volumeSeriesRef.current) {
+          const volumeData = data.map((d: any) => ({
+            time: d.time,
+            value: d.volume,
+            color: d.close >= d.open ? "#10b98180" : "#ef444480",
+          }));
+          volumeSeriesRef.current.setData(volumeData);
+        }
+
+        // Fit content
+        if (chartRef.current) {
+          chartRef.current.timeScale().fitContent();
+        }
+
+        setLoading(false);
+      } catch (err: any) {
+        console.error("Error fetching chart data:", err);
+        setError(err?.message || "Failed to load chart data");
         setLoading(false);
       }
     };
 
     fetchChartData();
-  }, [pair, timeframe]);
-
-  const timeframes = ["1m", "3m", "5m", "15m", "30m", "1h", "4h", "6h", "8h", "12h", "1d", "1w"];
-
-  // Calculate moving averages (simplified)
-  const ma5 = chartData.length > 0 
-    ? chartData.slice(-5).reduce((sum, d) => sum + d.close, 0) / Math.min(5, chartData.length)
-    : pair.price;
-  const ma10 = chartData.length > 0
-    ? chartData.slice(-10).reduce((sum, d) => sum + d.close, 0) / Math.min(10, chartData.length)
-    : pair.price;
-  const ma20 = chartData.length > 0
-    ? chartData.slice(-20).reduce((sum, d) => sum + d.close, 0) / Math.min(20, chartData.length)
-    : pair.price;
-  const ma60 = chartData.length > 0
-    ? chartData.slice(-60).reduce((sum, d) => sum + d.close, 0) / Math.min(60, chartData.length)
-    : pair.price;
+  }, [pair.symbol, timeframe]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-6xl h-[90vh] bg-[#0a0a0a] border-2 border-[#FFFF02]/30 rounded-lg shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-6xl h-[90vh] bg-[#0a0a0a] border-2 border-[#FFFF02]/30 rounded-lg shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#FFFF02]/20 bg-[#0a0a0a]">
+        <div className="flex items-center justify-between p-4 border-b border-[#FFFF02]/20 bg-[#0a0a0a] flex-shrink-0">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-bold text-white">{pair.symbol} K-Line Chart</h2>
             <div className="flex items-center gap-2 text-sm text-gray-400">
-              <span>{pair.symbol}</span>
-              <Wifi className="h-4 w-4 text-green-500" />
+              <span>{pair.name}</span>
+              {dataSource === "binance" || dataSource === "coingecko" ? (
+                <Wifi className="h-4 w-4 text-green-500" title={`Live data from ${dataSource}`} />
+              ) : (
+                <WifiOff className="h-4 w-4 text-yellow-500" title="Simulated data" />
+              )}
+            </div>
+            <div className="text-sm">
+              <span className="text-gray-400">Price: </span>
+              <span className="text-white font-mono font-semibold">
+                {formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}
+              </span>
+            </div>
+            <div className="text-sm">
+              <span className={pair.priceChangePercent >= 0 ? "text-green-500" : "text-red-500"}>
+                {pair.priceChangePercent >= 0 ? "+" : ""}
+                {pair.priceChangePercent.toFixed(2)}%
+              </span>
             </div>
           </div>
           <button
@@ -77,118 +200,70 @@ export function ChartPopup({ pair, onClose }: ChartPopupProps) {
           </button>
         </div>
 
-        {/* Control Panel */}
-        <div className="p-4 border-b border-[#FFFF02]/20 bg-[#0a0a0a] space-y-3">
-          {/* Moving Averages */}
-          <div className="flex items-center gap-4 text-sm">
-            <span className="text-gray-400">Moving Averages:</span>
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-500">MA5</span>
-              <span className="text-blue-500">MA10</span>
-              <span className="text-purple-500">MA20</span>
-              <span className="text-red-500">MA60</span>
-            </div>
-          </div>
-
-          {/* Timeframes */}
+        {/* Timeframes */}
+        <div className="p-3 border-b border-[#FFFF02]/20 bg-[#0a0a0a] flex-shrink-0">
           <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-sm text-gray-400 mr-2">Timeframe:</span>
             {timeframes.map((tf) => (
               <button
                 key={tf}
                 onClick={() => setTimeframe(tf)}
+                disabled={loading}
                 className={`
                   px-3 py-1 rounded text-sm font-medium transition-colors
                   ${timeframe === tf
                     ? "bg-[#FFFF02] text-[#121212]"
                     : "bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20"
                   }
+                  ${loading ? "opacity-50 cursor-not-allowed" : ""}
                 `}
               >
                 {tf}
               </button>
             ))}
           </div>
-
-          {/* Tools */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <button className="px-3 py-1 rounded text-sm bg-[#FFFF02] text-[#121212] font-medium">
-              MA Line
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-green-500 text-white font-medium">
-              Volume
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              Trendline
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              Horizontal Line
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              Clear Drawings
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              MACD
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              RSI
-            </button>
-            <button className="px-3 py-1 rounded text-sm bg-[#1a1a1a] text-gray-300 hover:bg-[#FFFF02]/20 font-medium">
-              Bollinger Bands
-            </button>
-          </div>
         </div>
 
         {/* Chart Area */}
-        <div className="relative h-full bg-[#0a0a0a] p-4">
-          {loading ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-gray-400">Loading chart...</div>
+        <div className="relative flex-1 bg-[#0a0a0a] p-4">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]/80 z-10">
+              <div className="text-gray-400">Loading chart data...</div>
             </div>
-          ) : (
-            <div className="relative w-full h-full">
-              {/* Simplified Chart Visualization */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center text-gray-500">
-                  <div className="text-lg mb-2">Chart Visualization</div>
-                  <div className="text-sm">
-                    In production, integrate a charting library like TradingView, Lightweight Charts, or Chart.js
-                  </div>
-                  <div className="mt-4 text-xs text-gray-600">
-                    Current Price: {formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}
-                  </div>
-                  <div className="mt-2 text-xs text-gray-600">
-                    MA5: {formatCurrency(ma5, pair.price < 1 ? 4 : 2)} | 
-                    MA10: {formatCurrency(ma10, pair.price < 1 ? 4 : 2)} | 
-                    MA20: {formatCurrency(ma20, pair.price < 1 ? 4 : 2)} | 
-                    MA60: {formatCurrency(ma60, pair.price < 1 ? 4 : 2)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Price Axis (Right) */}
-              <div className="absolute right-4 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 py-4">
-                <span>{formatCurrency(pair.price * 1.1, 2)}</span>
-                <span>{formatCurrency(pair.price * 1.05, 2)}</span>
-                <span className="text-[#FFFF02] font-bold">{formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}</span>
-                <span>{formatCurrency(pair.price * 0.95, 2)}</span>
-                <span>{formatCurrency(pair.price * 0.9, 2)}</span>
-              </div>
-
-              {/* Volume Bars (Bottom) */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 flex items-end justify-around px-4">
-                {chartData.slice(-20).map((data, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 mx-0.5 bg-green-500/50 rounded-t"
-                    style={{ height: `${(data.volume / Math.max(...chartData.map(d => d.volume))) * 100}%` }}
-                  />
-                ))}
+          )}
+          {error && (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#0a0a0a]/80 z-10">
+              <div className="text-center">
+                <div className="text-red-500 text-lg mb-2">Failed to load chart</div>
+                <div className="text-gray-500 text-sm">{error}</div>
               </div>
             </div>
           )}
+          <div
+            ref={chartContainerRef}
+            className="w-full h-full"
+          />
+        </div>
+
+        {/* Footer Info */}
+        <div className="p-3 border-t border-[#FFFF02]/20 bg-[#0a0a0a] flex-shrink-0">
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <div>
+              Source: <span className="text-white">{dataSource}</span>
+            </div>
+            <div className="flex items-center gap-4">
+              <div>
+                24h Volume: <span className="text-white">{formatCurrency(pair.buyVolume + pair.sellVolume, 0)}</span>
+              </div>
+              <div>
+                24h Change: <span className={pair.priceChange >= 0 ? "text-green-500" : "text-red-500"}>
+                  {pair.priceChange >= 0 ? "+" : ""}{formatCurrency(pair.priceChange, pair.price < 1 ? 4 : 2)}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-

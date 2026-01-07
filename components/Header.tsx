@@ -4,183 +4,129 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 
-// Disable Next.js Image optimization for external images temporarily
-const ExternalImage = ({ src, alt, width, height, className, priority }: any) => {
-  return (
-    <img
-      src={src}
-      alt={alt}
-      width={width}
-      height={height}
-      className={className}
-      loading={priority ? "eager" : "lazy"}
-    />
-  );
-};
-
 export function Header() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
-      {/* Desktop Header */}
-      <header className="hidden md:block bg-[#121212] border-b border-[#121212]">
-        <div className="flex items-center">
-          {/* Logo Section */}
-          <div className="w-[22%] xl:w-[20%] bg-[#FFFF02] border-r border-[#121212] flex justify-center items-center py-3 px-4">
-            <Link href="/" className="flex items-center justify-center w-full">
-              <Image
-                src="/logo.svg"
-                alt="SENKAI Logo"
-                width={382}
-                height={89}
-                className="h-10 md:h-12 w-auto object-contain"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Typing Text Section */}
-          <div className="w-[18%] xl:w-[18%] bg-[#FFFF02] border-r border-[#121212] px-3 xl:px-4 py-4">
-            <TypingText />
-          </div>
-
-          {/* Navigation Links */}
-          <div className="flex-1 bg-[#FFFF02] border-r border-[#121212]">
-            <nav className="flex items-center justify-center gap-10 xl:gap-12 py-4">
-              <Link href="https://blowfi.com/white-paper" className="text-[#121212] font-semibold text-sm xl:text-base hover:opacity-80 transition">
-                White Paper
-              </Link>
-              <Link href="#" className="text-[#121212] font-semibold text-sm xl:text-base hover:opacity-80 transition">
-                Document
-              </Link>
-              <Link href="#" className="text-[#121212] font-semibold text-sm xl:text-base hover:opacity-80 transition">
-                For Partner
-              </Link>
-            </nav>
-          </div>
-
-          {/* Right Section - Linktree & Launch App */}
-          <div className="w-[26%] xl:w-[24%] bg-[#FFFF02] border-r border-[#121212]">
-            <div className="flex h-full">
-              <div className="w-[70%] flex flex-col border-b border-[#121212]">
-                <div className="flex-1 flex items-center justify-center border-b border-[#121212] px-2">
-                  <Link href="https://linktr.ee/senkai" className="text-[#121212] font-extrabold text-xs xl:text-sm truncate">
-                    linktr.ee/senkai
-                  </Link>
-                </div>
-                <div className="flex-1 flex items-center justify-center bg-white hover-container">
-                  <Link href="https://app.senkai.xyz/" className="text-[#121212] font-extrabold text-xs xl:text-sm hover:text-[#FFFF02] transition-colors">
-                    Launch App
-                  </Link>
-                </div>
-              </div>
-              <div className="w-[30%] flex items-center justify-center border-l border-[#121212] p-2">
-                <ExternalImage
-                  src="https://blowfi.com/wp-content/uploads/2025/10/QR-code.svg"
-                  alt="QR Code"
-                  width={80}
-                  height={80}
-                  className="w-full h-auto max-w-[60px]"
+      {/* Desktop Header - Futuristic */}
+      <header className={`hidden md:block fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled ? 'bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-[#FFFF02]/20' : 'bg-transparent'
+      }`}>
+        <div className="container mx-auto px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <Link href="/" className="flex items-center group">
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#FFFF02] blur-xl opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+                <Image
+                  src="/logo.svg"
+                  alt="SENKAI Logo"
+                  width={382}
+                  height={89}
+                  className="h-10 md:h-12 w-auto object-contain relative z-10"
+                  priority
                 />
               </div>
+            </Link>
+
+            {/* Navigation */}
+            <nav className="flex items-center gap-8 lg:gap-12">
+              <Link 
+                href="https://blowfi.com/white-paper" 
+                className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
+              >
+                <span className="relative z-10">White Paper</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFFF02] group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link 
+                href="#" 
+                className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
+              >
+                <span className="relative z-10">Document</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFFF02] group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link 
+                href="#" 
+                className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
+              >
+                <span className="relative z-10">For Partner</span>
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFFF02] group-hover:w-full transition-all duration-300"></span>
+              </Link>
+            </nav>
+
+            {/* CTA Buttons */}
+            <div className="flex items-center gap-4">
+              <Link
+                href="https://linktr.ee/senkai"
+                className="hidden lg:block text-white/70 hover:text-[#FFFF02] text-sm font-medium transition-colors"
+              >
+                linktr.ee/senkai
+              </Link>
+              <Link
+                href="https://app.senkai.xyz/"
+                className="relative px-6 py-2.5 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-sm rounded-lg overflow-hidden group"
+              >
+                <span className="relative z-10">Launch App</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FFFF33] to-[#FFFF02] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-[#FFFF02] blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+              </Link>
             </div>
           </div>
         </div>
       </header>
 
       {/* Mobile Header */}
-      <header className="md:hidden bg-[#121212] border-b border-[#121212]">
-        <div className="flex items-center">
-          <div className="w-[40%] bg-[#FFFF02] border-r border-[#121212] flex justify-center items-center py-2.5 px-3">
-            <Link href="/" className="flex items-center justify-center w-full">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-xl border-b border-[#FFFF02]/20">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
+            <Link href="/" className="flex items-center">
               <Image
                 src="/logo.svg"
                 alt="SENKAI Logo"
                 width={382}
                 height={89}
-                className="h-7 w-auto object-contain"
+                className="h-8 w-auto object-contain"
                 priority
               />
             </Link>
-          </div>
-          <div className="flex-1 bg-[#FFFF02] border-r border-[#121212]">
-            <nav className="flex items-center justify-center gap-4 py-3 px-2">
-              <Link href="https://blowfi.com/white-paper" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition">
-                White Paper
-              </Link>
-              <Link href="#" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition">
-                Document
-              </Link>
-              <Link href="#" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition">
-                Partner
-              </Link>
-            </nav>
+            <Link
+              href="https://app.senkai.xyz/"
+              className="px-4 py-2 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-xs rounded-lg"
+            >
+              Launch
+            </Link>
           </div>
         </div>
       </header>
 
       {/* Mobile Bottom Navigation */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-[#121212]">
-        <div className="flex items-center justify-center">
-          <nav className="flex items-center justify-center gap-6 py-3 px-4">
-            <Link href="https://blowfi.com/white-paper" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#FFFF02]/20">
+        <div className="container mx-auto px-4">
+          <nav className="flex items-center justify-around py-3">
+            <Link href="https://blowfi.com/white-paper" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               White Paper
             </Link>
-            <Link href="#" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition">
+            <Link href="#" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               Document
             </Link>
-            <Link href="https://app.senkai.xyz/" className="text-[#121212] font-semibold text-xs hover:opacity-80 transition bg-[#FFFF02] px-3 py-1.5 rounded">
-              Launch App
+            <Link href="#" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
+              Partner
             </Link>
           </nav>
         </div>
       </div>
+
+      {/* Spacer for fixed header */}
+      <div className="h-20 md:h-20"></div>
     </>
   );
 }
-
-// Typing Effect Component
-function TypingText() {
-  const [currentText, setCurrentText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
-
-  const texts = useMemo(() => [
-    "Find Token Trading?",
-    "Wait A Pew.....",
-    "Automation Any Transaction!",
-    "So Is Easy"
-  ], []);
-
-  useEffect(() => {
-    const currentFullText = texts[currentIndex];
-    
-    if (isTyping) {
-      if (currentText.length < currentFullText.length) {
-        const timer = setTimeout(() => {
-          setCurrentText(currentFullText.slice(0, currentText.length + 1));
-        }, 50);
-        return () => clearTimeout(timer);
-      } else {
-        setTimeout(() => {
-          setIsTyping(false);
-        }, 1500);
-      }
-    } else {
-      setCurrentText("");
-      setCurrentIndex((prev) => (prev + 1) % texts.length);
-      setIsTyping(true);
-    }
-  }, [currentText, currentIndex, isTyping, texts]);
-
-  return (
-    <div className="font-['Urbanist'] font-bold text-xs text-[#121212] leading-relaxed">
-      <div className="min-h-[1.6em] relative">
-        {currentText}
-        {isTyping && <span className="animate-pulse">|</span>}
-      </div>
-    </div>
-  );
-}
-

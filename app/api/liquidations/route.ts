@@ -8,15 +8,18 @@ export async function GET() {
     // In production, use services like Coinglass API or exchange WebSocket feeds
 
     const generateLiquidationData = () => {
+      // Generate realistic liquidation data with variation
+      // Long liquidations are typically higher than short
       const baseLong = 60000000 + Math.random() * 80000000; // $60M - $140M
       const baseShort = 20000000 + Math.random() * 40000000; // $20M - $60M
+      const total = baseLong + baseShort;
 
       return {
-        total: baseLong + baseShort,
+        total: total,
         long: baseLong,
         short: baseShort,
-        longPercent: (baseLong / (baseLong + baseShort)) * 100,
-        shortPercent: (baseShort / (baseLong + baseShort)) * 100,
+        longPercent: (baseLong / total) * 100,
+        shortPercent: (baseShort / total) * 100,
       };
     };
 

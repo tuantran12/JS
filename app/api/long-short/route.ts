@@ -9,11 +9,11 @@ const EXCHANGES = [
 
 // Generate fallback long/short data
 function generateFallbackLongShort() {
-  const baseRatio = 1.2 + Math.random() * 0.8; // 1.2-2.0
+  const baseRatio = 1.2 + Math.random() * 0.8; // 1.2-2.0 (realistic range)
   const exchangeData = [
     {
       exchange: "Binance",
-      ratio: baseRatio,
+      ratio: baseRatio * (0.9 + Math.random() * 0.2),
       longAccount: 0.55 + Math.random() * 0.1,
       shortAccount: 0.45 - Math.random() * 0.1,
       timestamp: Date.now(),
@@ -103,13 +103,17 @@ export async function GET() {
       lastUpdated: Date.now(),
     });
   } catch (error: any) {
-    console.error("Error fetching long/short ratio:", error);
+    // Check for 451 (geographic restriction) or 403 (forbidden) errors
+    const status = error?.response?.status || error?.status;
+    const isBlocked = status === 451 || status === 403;
 
-    // Return fallback data on error
-    if (error?.response?.status === 451 || error?.response?.status === 403) {
-      console.warn("Binance API restricted, using fallback long/short data");
+    if (isBlocked) {
+      console.warn("Binance API restricted (451/403), using fallback long/short data");
+    } else {
+      console.error("Error fetching long/short ratio:", error?.message || error);
     }
 
+    // Always return fallback data to prevent app crash
     return NextResponse.json({
       data: generateFallbackLongShort(),
       lastUpdated: Date.now(),

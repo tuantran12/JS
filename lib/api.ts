@@ -34,6 +34,7 @@ async function cachedFetch<T>(
 
 /**
  * Retry logic with exponential backoff
+ * Skip retry for 451 (geographic restriction) errors
  */
 async function retryFetch<T>(
   fn: () => Promise<T>,
@@ -42,7 +43,11 @@ async function retryFetch<T>(
 ): Promise<T> {
   try {
     return await fn();
-  } catch (error) {
+  } catch (error: any) {
+    // Don't retry for 451 (geographic restriction) or 403 (forbidden) errors
+    if (error?.response?.status === 451 || error?.response?.status === 403) {
+      throw error;
+    }
     if (retries === 0) throw error;
     await new Promise((resolve) => setTimeout(resolve, delay));
     return retryFetch(fn, retries - 1, delay * 2);

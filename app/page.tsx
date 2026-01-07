@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
+import Homepage from "./homepage/page";
 
 export const metadata: Metadata = {
-  title: "Home - Crypto Analytics Platform",
+  title: "Home - SENKAI Crypto Analytics Platform",
+  description: "Real-time cryptocurrency market data and analytics platform",
 };
 
 export default function Home() {
-  // Redirect to analytics page as the main dashboard
-  redirect("/analytics");
+  return <Homepage />;
 }

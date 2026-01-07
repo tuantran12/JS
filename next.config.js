@@ -10,6 +10,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.binance.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'blowfi.com',
+      },
     ],
   },
   async headers() {

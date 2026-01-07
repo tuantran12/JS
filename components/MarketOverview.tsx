@@ -196,10 +196,10 @@ export function MarketOverview() {
         icon={<TrendingUp className="h-4 w-4 text-muted-foreground" />}
       />
 
-      {/* RSI Average - Placeholder */}
+      {/* RSI Average - Placeholder (should be calculated from API data) */}
       <MetricCard
         title="RSI Average Line"
-        value="25.58"
+        value="N/A"
         tooltip="Average Relative Strength Index across major cryptocurrencies"
         icon={<Activity className="h-4 w-4 text-muted-foreground" />}
       >

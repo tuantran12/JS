@@ -2,33 +2,42 @@ import { NextResponse } from "next/server";
 import { getBinanceAllPrices, handleApiError } from "@/lib/api";
 import type { TradingPair } from "@/lib/types";
 
-// Major coins to track
+// Major coins to track - Fallback prices (only used when API fails)
+// These are approximate market prices, will be replaced by real API data when available
 const MAJOR_COINS = [
-  { symbol: "BTCUSDT", name: "Bitcoin", fallbackPrice: 50000 },
+  { symbol: "BTCUSDT", name: "Bitcoin", fallbackPrice: 90000 },
   { symbol: "ETHUSDT", name: "Ethereum", fallbackPrice: 3000 },
-  { symbol: "XRPUSDT", name: "XRP", fallbackPrice: 0.55 },
-  { symbol: "BNBUSDT", name: "BNB", fallbackPrice: 320 },
-  { symbol: "SOLUSDT", name: "Solana", fallbackPrice: 110 },
-  { symbol: "DOGEUSDT", name: "Dogecoin", fallbackPrice: 0.08 },
-  { symbol: "ADAUSDT", name: "Cardano", fallbackPrice: 0.45 },
-  { symbol: "LINKUSDT", name: "Chainlink", fallbackPrice: 15 },
-  { symbol: "AVAXUSDT", name: "Avalanche", fallbackPrice: 35 },
-  { symbol: "DOTUSDT", name: "Polkadot", fallbackPrice: 7 },
-  { symbol: "MATICUSDT", name: "Polygon", fallbackPrice: 0.85 },
-  { symbol: "UNIUSDT", name: "Uniswap", fallbackPrice: 11 },
+  { symbol: "XRPUSDT", name: "XRP", fallbackPrice: 2.5 },
+  { symbol: "BNBUSDT", name: "BNB", fallbackPrice: 600 },
+  { symbol: "SOLUSDT", name: "Solana", fallbackPrice: 130 },
+  { symbol: "DOGEUSDT", name: "Dogecoin", fallbackPrice: 0.15 },
+  { symbol: "ADAUSDT", name: "Cardano", fallbackPrice: 0.5 },
+  { symbol: "LINKUSDT", name: "Chainlink", fallbackPrice: 18 },
+  { symbol: "AVAXUSDT", name: "Avalanche", fallbackPrice: 100 },
+  { symbol: "DOTUSDT", name: "Polkadot", fallbackPrice: 20 },
+  { symbol: "MATICUSDT", name: "Polygon", fallbackPrice: 1.5 },
+  { symbol: "UNIUSDT", name: "Uniswap", fallbackPrice: 12 },
 ];
 
 // Generate fallback data with realistic variation
 function generateFallbackData(): TradingPair[] {
   return MAJOR_COINS.map((coin) => {
-    // Add random variation ±3%
-    const variation = (Math.random() - 0.5) * 0.06;
+    // Add realistic price variation ±1.5% (more realistic than ±3%)
+    const variation = (Math.random() - 0.5) * 0.03;
     const price = coin.fallbackPrice * (1 + variation);
-    const priceChangePercent = (Math.random() - 0.5) * 10; // -5% to +5%
-    const priceChange = price * (priceChangePercent / 100);
-    const quoteVolume = price * 1000000 * (0.5 + Math.random());
 
-    const buyVolume = quoteVolume * (priceChangePercent >= 0 ? 0.55 : 0.45);
+    // Realistic 24h change: -3% to +3%
+    const priceChangePercent = (Math.random() - 0.5) * 6;
+    const priceChange = price * (priceChangePercent / 100);
+
+    // Calculate volume based on market cap (more realistic)
+    // Higher market cap coins have higher volume
+    const marketCapMultiplier = coin.fallbackPrice > 1000 ? 2 : coin.fallbackPrice > 100 ? 1.5 : 1;
+    const baseVolume = coin.fallbackPrice * 500000 * marketCapMultiplier;
+    const quoteVolume = baseVolume * (0.8 + Math.random() * 0.4); // ±20% variation
+
+    // Buy/sell volume based on price movement direction
+    const buyVolume = quoteVolume * (priceChangePercent >= 0 ? 0.52 : 0.48);
     const sellVolume = quoteVolume - buyVolume;
 
     return {
@@ -39,7 +48,7 @@ function generateFallbackData(): TradingPair[] {
       priceChangePercent,
       buyVolume,
       sellVolume,
-      volumeChange: priceChange * 1000000,
+      volumeChange: priceChange * (quoteVolume / price),
       volumeChangePercent: priceChangePercent,
       netFlow: buyVolume - sellVolume,
       lastUpdated: Date.now(),
@@ -102,21 +111,17 @@ export async function GET() {
       lastUpdated: Date.now(),
     });
   } catch (error: any) {
-    console.error("Error fetching prices:", error);
+    // Check for 451 (geographic restriction) or 403 (forbidden) errors
+    const status = error?.response?.status || error?.status;
+    const isBlocked = status === 451 || status === 403;
 
-    // If Binance API is blocked (451) or unavailable, return fallback data
-    if (error?.response?.status === 451 || error?.response?.status === 403) {
-      console.warn("Binance API restricted, using fallback data");
-      return NextResponse.json({
-        data: generateFallbackData(),
-        lastUpdated: Date.now(),
-        fallback: true,
-        message: "Live data temporarily unavailable - showing simulated data",
-      });
+    if (isBlocked) {
+      console.warn("Binance API restricted (451/403), using fallback data");
+    } else {
+      console.error("Error fetching prices:", error?.message || error);
     }
 
-    // For other errors, return fallback data to prevent app crash
-    console.warn("API error, using fallback data");
+    // Always return fallback data to prevent app crash
     return NextResponse.json({
       data: generateFallbackData(),
       lastUpdated: Date.now(),

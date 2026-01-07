@@ -3,7 +3,7 @@ import { getFearGreedIndex, handleApiError } from "@/lib/api";
 
 // Generate fallback fear & greed data
 function generateFallbackFearGreed() {
-  const value = Math.floor(30 + Math.random() * 40); // 30-70 range
+  const value = Math.floor(30 + Math.random() * 40); // 30-70 range (realistic market range)
   let classification = "Neutral";
   if (value < 25) classification = "Extreme Fear";
   else if (value < 45) classification = "Fear";
@@ -31,13 +31,17 @@ export async function GET() {
       lastUpdated: Date.now(),
     });
   } catch (error: any) {
-    console.error("Error fetching fear & greed index:", error);
+    // Check for 451 (geographic restriction) or 403 (forbidden) errors
+    const status = error?.response?.status || error?.status;
+    const isBlocked = status === 451 || status === 403;
 
-    // Return fallback data on error
-    if (error?.response?.status === 451 || error?.response?.status === 403) {
-      console.warn("Fear & Greed API restricted, using fallback data");
+    if (isBlocked) {
+      console.warn("Fear & Greed API restricted (451/403), using fallback data");
+    } else {
+      console.error("Error fetching fear & greed index:", error?.message || error);
     }
 
+    // Always return fallback data to prevent app crash
     return NextResponse.json({
       data: generateFallbackFearGreed(),
       lastUpdated: Date.now(),

@@ -11,13 +11,13 @@ export async function GET() {
       // Generate last 30 days of ETF flow data
       const days = 30;
       const data = [];
-      let cumulativeInflow = 50000000000; // Start at $50B
+      let cumulativeInflow = 50000000000; // Start at ~$50B (realistic starting point)
 
       for (let i = days; i >= 0; i--) {
         const date = new Date();
         date.setDate(date.getDate() - i);
 
-        // Generate realistic daily flows
+        // Generate realistic daily flows with positive bias
         const dailyFlow = (Math.random() - 0.3) * 500000000; // -$150M to +$350M bias positive
         cumulativeInflow += dailyFlow;
 
@@ -40,8 +40,8 @@ export async function GET() {
     const totalNetFlow = historicalData.reduce((sum, item) => sum + item.netFlow, 0);
     const dailyAverage = totalNetFlow / historicalData.length;
 
-    // Calculate total NAV (approximate)
-    const totalNav = latest.cumulativeInflow * 1.2; // Assume 20% appreciation
+    // Calculate total NAV (approximate) - typically 1.5-2.5x cumulative inflow
+    const totalNav = latest.cumulativeInflow * (1.5 + Math.random() * 1.0);
 
     return NextResponse.json({
       data: {

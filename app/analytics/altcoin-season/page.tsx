@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 export default function AltcoinSeasonPage() {
   // Altcoin season index: 0-100, where 100 = full altcoin season
   // Calculated based on altcoin performance vs Bitcoin
-  const [altcoinIndex, setAltcoinIndex] = useState(65);
+  const [altcoinIndex, setAltcoinIndex] = useState(50);
 
   useEffect(() => {
     // Simulate changing data

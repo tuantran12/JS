@@ -3,31 +3,41 @@ import { getBinanceOpenInterest, handleApiError } from "@/lib/api";
 
 const MAJOR_FUTURES = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT"];
 
-// Generate fallback OI data - Dynamic with realistic variation
+// Generate fallback OI data - Updated with realistic Jan 2026 values
 function generateFallbackOI() {
   const baseOI = [
-    { symbol: "BTCUSDT", oi: 30000000000 }, // ~$30B base
-    { symbol: "ETHUSDT", oi: 10000000000 }, // ~$10B
-    { symbol: "BNBUSDT", oi: 5000000000 }, // ~$5B
-    { symbol: "SOLUSDT", oi: 3000000000 }, // ~$3B
-    { symbol: "XRPUSDT", oi: 2000000000 }, // ~$2B
+    { symbol: "BTCUSDT", oi: 38000000000 },  // $38B
+    { symbol: "ETHUSDT", oi: 14500000000 },  // $14.5B
+    { symbol: "BNBUSDT", oi: 1200000000 },   // $1.2B
+    { symbol: "SOLUSDT", oi: 1800000000 },   // $1.8B
+    { symbol: "XRPUSDT", oi: 2100000000 },   // $2.1B
   ];
 
-  const openInterestData = baseOI.map((item) => ({
-    exchange: "Binance",
-    symbol: item.symbol,
-    openInterest: item.oi * (0.9 + Math.random() * 0.2), // ±10% variation
-    change24h: item.oi * (Math.random() - 0.5) * 0.05, // ±2.5% change
-    timestamp: Date.now(),
-  }));
+  const openInterestData = baseOI.map((item) => {
+    // Realistic variation ±2%
+    const variation = 0.98 + Math.random() * 0.04;
+    const oi = item.oi * variation;
+
+    // 24h change: -1% to +1%
+    const changePercent = (Math.random() - 0.5) * 2;
+    const change24h = oi * (changePercent / 100);
+
+    return {
+      exchange: "Binance",
+      symbol: item.symbol,
+      openInterest: oi,
+      change24h,
+      timestamp: Date.now(),
+    };
+  });
 
   const totalOI = openInterestData.reduce((sum, item) => sum + item.openInterest, 0);
-  const change24h = openInterestData.reduce((sum, item) => sum + item.change24h, 0);
-  const changePercent24h = totalOI > 0 ? (change24h / totalOI) * 100 : 0;
+  const totalChange24h = openInterestData.reduce((sum, item) => sum + item.change24h, 0);
+  const changePercent24h = totalOI > 0 ? (totalChange24h / totalOI) * 100 : 0;
 
   return {
     total: totalOI,
-    change24h,
+    change24h: totalChange24h,
     changePercent24h,
     byExchange: openInterestData,
   };

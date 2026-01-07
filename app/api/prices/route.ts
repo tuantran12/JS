@@ -2,21 +2,20 @@ import { NextResponse } from "next/server";
 import { getBinanceAllPrices, handleApiError } from "@/lib/api";
 import type { TradingPair } from "@/lib/types";
 
-// Major coins to track - Fallback prices (only used when API fails)
-// These are approximate market prices, will be replaced by real API data when available
+// Major coins to track - Updated with realistic Jan 2026 market prices
 const MAJOR_COINS = [
-  { symbol: "BTCUSDT", name: "Bitcoin", fallbackPrice: 90000 },
-  { symbol: "ETHUSDT", name: "Ethereum", fallbackPrice: 3000 },
-  { symbol: "XRPUSDT", name: "XRP", fallbackPrice: 2.5 },
-  { symbol: "BNBUSDT", name: "BNB", fallbackPrice: 600 },
-  { symbol: "SOLUSDT", name: "Solana", fallbackPrice: 130 },
-  { symbol: "DOGEUSDT", name: "Dogecoin", fallbackPrice: 0.15 },
-  { symbol: "ADAUSDT", name: "Cardano", fallbackPrice: 0.5 },
-  { symbol: "LINKUSDT", name: "Chainlink", fallbackPrice: 18 },
-  { symbol: "AVAXUSDT", name: "Avalanche", fallbackPrice: 100 },
-  { symbol: "DOTUSDT", name: "Polkadot", fallbackPrice: 20 },
-  { symbol: "MATICUSDT", name: "Polygon", fallbackPrice: 1.5 },
-  { symbol: "UNIUSDT", name: "Uniswap", fallbackPrice: 12 },
+  { symbol: "BTCUSDT", name: "Bitcoin", fallbackPrice: 97500 },
+  { symbol: "ETHUSDT", name: "Ethereum", fallbackPrice: 3750 },
+  { symbol: "XRPUSDT", name: "XRP", fallbackPrice: 2.85 },
+  { symbol: "BNBUSDT", name: "BNB", fallbackPrice: 625 },
+  { symbol: "SOLUSDT", name: "Solana", fallbackPrice: 185 },
+  { symbol: "DOGEUSDT", name: "Dogecoin", fallbackPrice: 0.32 },
+  { symbol: "ADAUSDT", name: "Cardano", fallbackPrice: 0.95 },
+  { symbol: "LINKUSDT", name: "Chainlink", fallbackPrice: 22.5 },
+  { symbol: "AVAXUSDT", name: "Avalanche", fallbackPrice: 38 },
+  { symbol: "DOTUSDT", name: "Polkadot", fallbackPrice: 7.5 },
+  { symbol: "MATICUSDT", name: "Polygon", fallbackPrice: 0.87 },
+  { symbol: "UNIUSDT", name: "Uniswap", fallbackPrice: 13.5 },
 ];
 
 // Generate fallback data with realistic variation
@@ -31,13 +30,19 @@ function generateFallbackData(): TradingPair[] {
     const priceChange = price * (priceChangePercent / 100);
 
     // Calculate volume based on market cap (more realistic)
-    // Higher market cap coins have higher volume
-    const marketCapMultiplier = coin.fallbackPrice > 1000 ? 2 : coin.fallbackPrice > 100 ? 1.5 : 1;
-    const baseVolume = coin.fallbackPrice * 500000 * marketCapMultiplier;
+    const baseVolume = coin.fallbackPrice > 1000 ? 50000000 : // BTC, ETH: $50M+
+                       coin.fallbackPrice > 100 ? 20000000 :   // BNB, SOL: $20M+
+                       coin.fallbackPrice > 10 ? 10000000 :    // LINK, UNI: $10M+
+                       5000000;                                 // Others: $5M+
+
     const quoteVolume = baseVolume * (0.8 + Math.random() * 0.4); // ±20% variation
 
-    // Buy/sell volume based on price movement direction
-    const buyVolume = quoteVolume * (priceChangePercent >= 0 ? 0.52 : 0.48);
+    // Buy/sell ratio based on price change
+    const buyRatio = priceChangePercent >= 0 ?
+                     0.52 + (priceChangePercent / 100) : // 52-55% if positive
+                     0.48 + (priceChangePercent / 100);  // 45-48% if negative
+
+    const buyVolume = quoteVolume * buyRatio;
     const sellVolume = quoteVolume - buyVolume;
 
     return {

@@ -37,7 +37,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-4">
               <Link
-                href="https://x.com/senkai"
+                href="https://x.com/SenkAI_Agent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-12 h-12 rounded-lg bg-[#1a1a1a] border border-[#FFFF02]/20 flex items-center justify-center hover:border-[#FFFF02] hover:bg-[#FFFF02]/10 transition-all group"
@@ -97,8 +97,8 @@ export function Footer() {
                 Join our community and stay updated
               </p>
               <div className="flex flex-col gap-2">
-                <Link href="https://x.com/senkai" className="text-[#FFFF02] hover:text-[#FFFF33] text-sm md:text-base transition-colors">
-                  @senkai
+                <Link href="https://x.com/SenkAI_Agent" className="text-[#FFFF02] hover:text-[#FFFF33] text-sm md:text-base transition-colors">
+                  @SenkAI_Agent
                 </Link>
                 <Link href="https://t.me/senkai" className="text-[#FFFF02] hover:text-[#FFFF33] text-sm md:text-base transition-colors">
                   t.me/senkai

@@ -23,24 +23,24 @@ export function Footer() {
       {/* Noise overlay */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.06] bg-[#FFFF02] noise-overlay"></div>
       
-      <div className="relative z-10 container mx-auto px-4 lg:px-16 py-16">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+      <div className="relative z-10 container mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-16">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
           {/* Logo and Copyright */}
-          <div className="flex flex-col gap-2 w-full md:w-1/2">
+          <div className="flex flex-col gap-3 w-full md:w-1/2">
             <ExternalImage
               src="https://blowfi.com/wp-content/uploads/2025/10/LOGO.svg"
               alt="SENKAI Logo"
               width={150}
               height={60}
-              className="mb-2"
+              className="mb-1 w-32 md:w-40 h-auto"
             />
-            <p className="text-[#FEF6FF] font-semibold text-base uppercase">
+            <p className="text-[#FEF6FF] font-semibold text-sm md:text-base uppercase">
               2025 SENKAI © All Rights Reserved
             </p>
           </div>
 
           {/* Social Icons */}
-          <div className="flex items-center justify-center md:justify-end gap-6 w-full md:w-1/2">
+          <div className="flex items-center justify-center md:justify-end gap-4 md:gap-6 w-full md:w-1/2">
             <Link
               href="https://x.com/senkai"
               target="_blank"
@@ -50,9 +50,9 @@ export function Footer() {
               <ExternalImage
                 src="https://blowfi.com/wp-content/uploads/2025/10/X.svg"
                 alt="X (Twitter)"
-                width={56}
-                height={56}
-                className="w-12 h-12 md:w-14 md:h-14"
+                width={48}
+                height={48}
+                className="w-10 h-10 md:w-12 md:h-12"
               />
             </Link>
             <Link
@@ -64,9 +64,9 @@ export function Footer() {
               <ExternalImage
                 src="https://blowfi.com/wp-content/uploads/2025/10/Tele.svg"
                 alt="Telegram"
-                width={56}
-                height={56}
-                className="w-12 h-12 md:w-14 md:h-14"
+                width={48}
+                height={48}
+                className="w-10 h-10 md:w-12 md:h-12"
               />
             </Link>
             <Link
@@ -76,9 +76,9 @@ export function Footer() {
               <ExternalImage
                 src="https://blowfi.com/wp-content/uploads/2025/10/Discord.svg"
                 alt="Discord"
-                width={56}
-                height={56}
-                className="w-12 h-12 md:w-14 md:h-14"
+                width={48}
+                height={48}
+                className="w-10 h-10 md:w-12 md:h-12"
               />
             </Link>
           </div>

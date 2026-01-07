@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import type { TradingPair, TimeFrame } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
+import { ChartPopup } from "./ChartPopup";
 
 export function TradingPairsTable() {
   const [pairs, setPairs] = useState<TradingPair[]>([]);
@@ -23,6 +24,7 @@ export function TradingPairsTable() {
   const [error, setError] = useState<string | null>(null);
   const { selectedTimeframe, setSelectedTimeframe, isRefreshing, setIsRefreshing } = useAppStore();
   const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
+  const [selectedPair, setSelectedPair] = useState<TradingPair | null>(null);
 
   const fetchPairs = useCallback(async () => {
     try {
@@ -65,10 +67,17 @@ export function TradingPairsTable() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <CardTitle>Trading Pairs</CardTitle>
+    <>
+      {selectedPair && (
+        <ChartPopup
+          pair={selectedPair}
+          onClose={() => setSelectedPair(null)}
+        />
+      )}
+      <Card className="bg-[#0a0a0a] border-[#FFFF02]/20 text-white">
+        <CardHeader>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <CardTitle className="text-white">Trading Pairs</CardTitle>
           <div className="flex items-center gap-2">
             <Tabs
               value={selectedTimeframe}
@@ -94,7 +103,7 @@ export function TradingPairsTable() {
             </Button>
           </div>
         </div>
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-gray-400">
           Last updated: {timeAgo(lastUpdate)}
         </div>
       </CardHeader>
@@ -102,14 +111,14 @@ export function TradingPairsTable() {
         {loading ? (
           <div className="space-y-3">
             {[...Array(10)].map((_, i) => (
-              <div key={i} className="h-16 bg-muted animate-pulse rounded" />
+              <div key={i} className="h-16 bg-[#1a1a1a] animate-pulse rounded" />
             ))}
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b text-sm text-muted-foreground">
+                <tr className="border-b border-[#FFFF02]/20 text-sm text-gray-400">
                   <th className="text-left p-3 font-medium">Coin</th>
                   <th className="text-right p-3 font-medium">Price</th>
                   <th className="text-right p-3 font-medium">Change</th>
@@ -129,17 +138,17 @@ export function TradingPairsTable() {
                 {pairs.map((pair) => (
                   <tr
                     key={pair.symbol}
-                    className="border-b hover:bg-muted/50 transition-colors"
+                    className="border-b border-[#FFFF02]/10 hover:bg-[#1a1a1a]/50 transition-colors"
                   >
                     <td className="p-3">
                       <div>
-                        <div className="font-medium">{pair.name}</div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="font-medium text-white">{pair.name}</div>
+                        <div className="text-sm text-gray-400">
                           {pair.symbol.replace("USDT", "")}
                         </div>
                       </div>
                     </td>
-                    <td className="text-right p-3 font-mono">
+                    <td className="text-right p-3 font-mono text-white">
                       {formatCurrency(pair.price, pair.price < 1 ? 4 : 2)}
                     </td>
                     <td className="text-right p-3">
@@ -152,21 +161,17 @@ export function TradingPairsTable() {
                         >
                           {formatPercentage(pair.priceChangePercent)}
                         </span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs text-gray-400">
                           {pair.priceChange >= 0 ? "+" : ""}
                           {formatCurrency(pair.priceChange, pair.price < 1 ? 4 : 2)}
                         </span>
                       </div>
                     </td>
-                    <td className="text-right p-3 hidden md:table-cell">
-                      <span className="text-positive">
-                        {formatCompactCurrency(pair.buyVolume)}
-                      </span>
+                    <td className="text-right p-3 hidden md:table-cell text-green-500">
+                      {formatCompactCurrency(pair.buyVolume)}
                     </td>
-                    <td className="text-right p-3 hidden md:table-cell">
-                      <span className="text-negative">
-                        {formatCompactCurrency(pair.sellVolume)}
-                      </span>
+                    <td className="text-right p-3 hidden md:table-cell text-red-500">
+                      {formatCompactCurrency(pair.sellVolume)}
                     </td>
                     <td className="text-right p-3 hidden lg:table-cell">
                       <span
@@ -180,17 +185,18 @@ export function TradingPairsTable() {
                       </span>
                     </td>
                     <td className="text-right p-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          // Navigate to chart view (to be implemented)
-                          console.log(`View chart for ${pair.symbol}`);
-                        }}
-                      >
-                        <TrendingUp className="h-3 w-3 mr-1" />
-                        <span className="hidden sm:inline">Chart</span>
-                      </Button>
+                      <div className="relative group">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-[#1a1a1a] border-[#FFFF02]/20 text-white hover:bg-[#FFFF02]/10 hover:border-[#FFFF02]"
+                          onMouseEnter={() => setSelectedPair(pair)}
+                          onClick={() => setSelectedPair(pair)}
+                        >
+                          <TrendingUp className="h-3 w-3 mr-1" />
+                          <span className="hidden sm:inline">Chart</span>
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -200,5 +206,6 @@ export function TradingPairsTable() {
         )}
       </CardContent>
     </Card>
+    </>
   );
 }

@@ -240,38 +240,43 @@ function FeaturesSection() {
   );
 }
 
-// How It Works Section - Futuristic Steps
+// How It Works Section - Improved Layout
 function HowItWorksSection() {
   const steps = [
     {
       number: "01",
       title: "Connect Wallet",
-      description: "Connect your Solana wallet to get started instantly"
+      description: "Connect your Solana wallet to get started instantly",
+      icon: "🔗"
     },
     {
       number: "02",
       title: "Select AI Mode",
-      description: "Choose from Auto-trade, Copy-trade, or Custom AI Bots"
+      description: "Choose from Auto-trade, Copy-trade, or Custom AI Bots",
+      icon: "🤖"
     },
     {
       number: "03",
       title: "Stake & Get CAT",
-      description: "Buy or stake tokens to receive CAT for trading capital"
+      description: "Buy or stake tokens to receive CAT for trading capital",
+      icon: "💰"
     },
     {
       number: "04",
       title: "Monitor & Optimize",
-      description: "Track performance and adjust strategies in real-time"
+      description: "Track performance and adjust strategies in real-time",
+      icon: "📊"
     },
     {
       number: "05",
       title: "Profit & Withdraw",
-      description: "Earn profits, withdraw, or reinvest in trading"
+      description: "Earn profits, withdraw, or reinvest in trading",
+      icon: "💸"
     }
   ];
 
   return (
-    <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative">
+    <section className="py-32 md:py-40 lg:py-48 px-4 sm:px-6 lg:px-8 relative bg-gradient-to-b from-[#000000] via-[#0a0a0a] to-[#000000]">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 md:mb-20">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-6">
@@ -282,27 +287,61 @@ function HowItWorksSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4 mb-20">
+        {/* Desktop: Horizontal Timeline with Arrows */}
+        <div className="hidden lg:flex items-center justify-between gap-4 mb-20 relative">
+          {/* Connection Lines */}
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gradient-to-r from-[#FFFF02]/30 via-[#FFFF02]/50 to-[#FFFF02]/30 -z-10"></div>
+          
           {steps.map((step, index) => (
-            <div
-              key={index}
-              className="relative group"
-            >
-              {/* Connection Line with Glow - Desktop Only */}
+            <div key={index} className="relative flex-1 group">
+              {/* Arrow between steps */}
               {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-1/2 left-full w-full h-1 bg-gradient-to-r from-[#FFFF02] via-[#FFFF02]/50 to-transparent -translate-y-1/2 z-0 transform group-hover:scale-x-110 transition-transform shadow-lg shadow-[#FFFF02]/50"></div>
+                <div className="absolute top-1/2 right-0 w-full h-0.5 bg-gradient-to-r from-[#FFFF02] to-transparent -z-10">
+                  <div className="absolute right-0 top-1/2 -translate-y-1/2 w-0 h-0 border-l-[12px] border-l-[#FFFF02] border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent"></div>
+                </div>
               )}
               
-              <div className="relative bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] rounded-3xl p-6 md:p-8 border-2 border-[#FFFF02]/20 hover:border-[#FFFF02] transition-all duration-500 h-full flex flex-col hover:shadow-2xl hover:shadow-[#FFFF02]/30 hover:-translate-y-3 overflow-hidden">
-                {/* Holographic Effect */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-[#FFFF02]/10 via-transparent to-[#FFFF02]/10"></div>
+              <div className="relative bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] rounded-2xl p-6 border-2 border-[#FFFF02]/20 hover:border-[#FFFF02] transition-all duration-500 hover:shadow-2xl hover:shadow-[#FFFF02]/30 hover:-translate-y-2 overflow-hidden">
+                {/* Glow on Hover */}
+                <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
                 
-                <div className="relative z-10">
-                  <div className="text-8xl md:text-9xl font-black text-[#FFFF02]/10 mb-4 group-hover:text-[#FFFF02]/20 transition-colors">{step.number}</div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors duration-300">
+                <div className="relative z-10 text-center">
+                  <div className="text-6xl font-black text-[#FFFF02]/20 mb-3 group-hover:text-[#FFFF02]/40 transition-colors">{step.number}</div>
+                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#FFFF02] transition-colors duration-300">
                     {step.title}
                   </h3>
-                  <p className="text-gray-400 text-base md:text-lg leading-relaxed flex-1">
+                  <p className="text-gray-400 text-sm leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Mobile/Tablet: Vertical Timeline */}
+        <div className="lg:hidden space-y-8 mb-20">
+          {steps.map((step, index) => (
+            <div key={index} className="relative group">
+              {/* Vertical Line */}
+              {index < steps.length - 1 && (
+                <div className="absolute left-8 top-20 bottom-0 w-0.5 bg-gradient-to-b from-[#FFFF02]/50 to-transparent -z-10"></div>
+              )}
+              
+              <div className="flex items-start gap-6">
+                {/* Step Number Circle */}
+                <div className="relative flex-shrink-0">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FFFF02]/20 to-[#FFFF02]/5 border-2 border-[#FFFF02]/30 flex items-center justify-center text-2xl font-black text-[#FFFF02] group-hover:scale-110 transition-transform duration-300">
+                    {step.number}
+                  </div>
+                </div>
+                
+                {/* Content Card */}
+                <div className="flex-1 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] rounded-2xl p-6 border-2 border-[#FFFF02]/20 hover:border-[#FFFF02] transition-all duration-500">
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#FFFF02] transition-colors duration-300">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-400 text-base leading-relaxed">
                     {step.description}
                   </p>
                 </div>

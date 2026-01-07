@@ -10,6 +10,7 @@ export async function GET() {
     const generateLiquidationData = () => {
       // Generate realistic liquidation data with variation
       // Long liquidations are typically higher than short
+      // Based on market data: Long usually 60-80% of total
       const baseLong = 60000000 + Math.random() * 80000000; // $60M - $140M
       const baseShort = 20000000 + Math.random() * 40000000; // $20M - $60M
       const total = baseLong + baseShort;

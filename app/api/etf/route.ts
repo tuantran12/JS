@@ -36,12 +36,13 @@ export async function GET() {
     const historicalData = generateETFData();
     const latest = historicalData[historicalData.length - 1];
 
-    // Calculate daily average over last 30 days
-    const totalNetFlow = historicalData.reduce((sum, item) => sum + item.netFlow, 0);
-    const dailyAverage = totalNetFlow / historicalData.length;
+    // Calculate daily average over last 30 days (only positive net flows)
+    const positiveFlows = historicalData.filter(item => item.netFlow > 0);
+    const totalNetFlow = positiveFlows.reduce((sum, item) => sum + item.netFlow, 0);
+    const dailyAverage = positiveFlows.length > 0 ? totalNetFlow / positiveFlows.length : 0;
 
-    // Calculate total NAV (approximate) - typically 1.5-2.5x cumulative inflow
-    const totalNav = latest.cumulativeInflow * (1.5 + Math.random() * 1.0);
+    // Calculate total NAV (approximate) - typically 2.0-2.8x cumulative inflow
+    const totalNav = latest.cumulativeInflow * (2.0 + Math.random() * 0.8);
 
     return NextResponse.json({
       data: {

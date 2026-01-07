@@ -87,7 +87,9 @@ export async function GET() {
       const quoteVolume = parseFloat(data.quoteVolume);
 
       // Simulate buy/sell volume (in real app, this would come from order book data)
-      const buyVolume = quoteVolume * (priceChangePercent >= 0 ? 0.55 : 0.45);
+      // More realistic: when price goes up, buy volume is higher; when down, sell volume is higher
+      const buyVolumeRatio = priceChangePercent >= 0 ? 0.52 + Math.random() * 0.06 : 0.48 + Math.random() * 0.06;
+      const buyVolume = quoteVolume * buyVolumeRatio;
       const sellVolume = quoteVolume - buyVolume;
       const netFlow = buyVolume - sellVolume;
 

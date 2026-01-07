@@ -416,12 +416,12 @@ function TokenUtilitySection() {
               <span className="text-[#FFFF02]"> Token Economy</span>
             </h2>
             <p className="text-xl text-[#FEF6FF] font-semibold uppercase hidden md:block">
-              SENKAI's token model powers AI trading, staking, and <br />
+              SENKAI&apos;s token model powers AI trading, staking, and <br />
               credit-based liquidity,ensuring seamless transactions <br />
               and sustainable growth.
             </p>
             <p className="text-xl text-[#FEF6FF] font-normal block md:hidden">
-              SENKAI's token model powers AI trading, staking, and credit-based liquidity,ensuring seamless transactions and sustainable growth.
+              SENKAI&apos;s token model powers AI trading, staking, and credit-based liquidity,ensuring seamless transactions and sustainable growth.
             </p>
           </div>
           

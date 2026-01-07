@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 // Disable Next.js Image optimization for external images temporarily
 const ExternalImage = ({ src, alt, width, height, className, priority }: any) => {
@@ -144,12 +144,12 @@ function TypingText() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
 
-  const texts = [
+  const texts = useMemo(() => [
     "Find Token Trading?",
     "Wait A Pew.....",
     "Automation Any Transaction!",
     "So Is Easy"
-  ];
+  ], []);
 
   useEffect(() => {
     const currentFullText = texts[currentIndex];

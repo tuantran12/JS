@@ -262,3 +262,59 @@ html {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+/* Animated Gradient Background */
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Neon Glow */
+.neon-glow {
+  box-shadow: 0 0 20px rgba(255, 255, 2, 0.3),
+              0 0 40px rgba(255, 255, 2, 0.2),
+              0 0 60px rgba(255, 255, 2, 0.1);
+}
+
+/* Holographic Effect */
+@keyframes holographic {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.holographic {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 2, 0.1) 0%,
+    rgba(255, 255, 51, 0.1) 25%,
+    rgba(255, 255, 2, 0.1) 50%,
+    rgba(255, 255, 51, 0.1) 75%,
+    rgba(255, 255, 2, 0.1) 100%
+  );
+  background-size: 200% 100%;
+  animation: holographic 3s ease infinite;
+}

@@ -27,12 +27,12 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8">
           {/* Logo and Copyright */}
           <div className="flex flex-col gap-3 w-full md:w-1/2">
-            <ExternalImage
-              src="https://blowfi.com/wp-content/uploads/2025/10/LOGO.svg"
+            <Image
+              src="/logo.svg"
               alt="SENKAI Logo"
-              width={150}
-              height={60}
-              className="mb-1 w-32 md:w-40 h-auto"
+              width={382}
+              height={89}
+              className="w-48 md:w-56 h-auto object-contain mb-1"
             />
             <p className="text-[#FEF6FF] font-semibold text-sm md:text-base uppercase">
               2025 SENKAI © All Rights Reserved

@@ -162,6 +162,33 @@ export async function getCoinGeckoPrice(coinId: string): Promise<any> {
 }
 
 /**
+ * CoinGecko API - Get multiple coins market data
+ */
+export async function getCoinGeckoMarkets(coinIds: string[]): Promise<any[]> {
+  const data = await cachedFetch(
+    `coingecko-markets-${coinIds.join(',')}`,
+    async () => {
+      const response = await retryFetch(() =>
+        axios.get(`https://api.coingecko.com/api/v3/coins/markets`, {
+          params: {
+            vs_currency: 'usd',
+            ids: coinIds.join(','),
+            order: 'market_cap_desc',
+            per_page: 250,
+            page: 1,
+            sparkline: false,
+            price_change_percentage: '24h',
+          },
+        })
+      );
+      return response.data;
+    },
+    10000 // 10 second cache
+  );
+  return data;
+}
+
+/**
  * CoinGecko API - Get global market data
  */
 export async function getCoinGeckoGlobal(): Promise<any> {

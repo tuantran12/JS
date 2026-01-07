@@ -20,7 +20,7 @@ export function Header() {
                   alt="SENKAI Logo"
                   width={382}
                   height={89}
-                  className="h-10 md:h-12 w-auto object-contain relative z-10"
+                  className="h-8 md:h-10 w-auto object-contain relative z-10"
                   priority
                 />
               </div>
@@ -89,7 +89,7 @@ export function Header() {
                 alt="SENKAI Logo"
                 width={382}
                 height={89}
-                className="h-8 w-auto object-contain"
+                className="h-7 w-auto object-contain"
                 priority
               />
             </Link>

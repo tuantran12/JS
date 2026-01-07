@@ -29,7 +29,7 @@ export function Footer() {
                 alt="SENKAI Logo"
                 width={382}
                 height={89}
-                className="w-48 md:w-56 h-auto object-contain relative z-10"
+                className="w-36 md:w-40 h-auto object-contain relative z-10"
               />
             </div>
             <p className="text-gray-400 text-sm md:text-base leading-relaxed">

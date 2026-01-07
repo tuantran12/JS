@@ -198,7 +198,6 @@ export function TradingPairsTable() {
                         variant="outline"
                         size="sm"
                         className="bg-[#1a1a1a] border-[#FFFF02]/20 text-white hover:bg-[#FFFF02]/10 hover:border-[#FFFF02] transition-all"
-                        onMouseEnter={() => setSelectedPair(pair)}
                         onClick={() => setSelectedPair(pair)}
                       >
                         <TrendingUp className="h-3.5 w-3.5 mr-1.5" />

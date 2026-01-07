@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Bot, Store, Coins, Shield, DollarSign, LockKeyhole, Rocket } from "lucide-react";
 
 export default function Homepage() {
   return (
@@ -147,7 +148,7 @@ function AboutSection() {
 function FeaturesSection() {
   const features = [
     {
-      icon: "🤖",
+      icon: Bot,
       title: "AI-Powered Automated Trading",
       description: "Train AI to execute trades based on personalized strategies. Test in simulation before going live.",
       items: [
@@ -157,7 +158,7 @@ function FeaturesSection() {
       ]
     },
     {
-      icon: "🛒",
+      icon: Store,
       title: "AI Marketplace & Bot Ecosystem",
       description: "Create, train, and list AI trading bots. Developers can build and monetize their AI bots.",
       items: [
@@ -167,7 +168,7 @@ function FeaturesSection() {
       ]
     },
     {
-      icon: "💎",
+      icon: Coins,
       title: "DeFi Lending & Credit System",
       description: "Stake tokens to receive CAT for trading capital. Access credit upfront with SOL, USDT, USDC.",
       items: [
@@ -177,7 +178,7 @@ function FeaturesSection() {
       ]
     },
     {
-      icon: "🔒",
+      icon: Shield,
       title: "Decentralized & Secure",
       description: "Transparent system powered by on-chain smart contracts. Non-custodial trading for maximum security.",
       items: [
@@ -213,7 +214,9 @@ function FeaturesSection() {
               <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
               
               <div className="relative z-10">
-              <div className="text-5xl md:text-6xl mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">{feature.icon}</div>
+              <div className="mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                <feature.icon className="w-16 h-16 md:w-20 md:h-20 text-[#FFFF02]" strokeWidth={1.5} />
+              </div>
               <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors duration-300">
                 {feature.title}
               </h3>
@@ -362,28 +365,33 @@ function TokenUtilitySection() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
           {[
-            { icon: "💰", title: "Trading Capital", desc: "Use CAT tokens as trading capital for AI-powered trading strategies" },
-            { icon: "🔐", title: "Staking Rewards", desc: "Stake tokens to earn CAT and access trading credit upfront" },
-            { icon: "🚀", title: "Platform Access", desc: "Access premium features, AI bots marketplace, and exclusive tools" }
-          ].map((item, index) => (
-            <div
-              key={index}
-              className="group relative bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] rounded-3xl p-8 md:p-10 border-2 border-[#FFFF02]/20 hover:border-[#FFFF02] transition-all duration-500 hover:shadow-2xl hover:shadow-[#FFFF02]/30 hover:-translate-y-3 overflow-hidden"
-            >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-[#FFFF02]/10 via-transparent to-[#FFFF02]/10"></div>
-              <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
-              
-              <div className="relative z-10">
-                <div className="text-5xl mb-6 transform group-hover:scale-110 transition-transform duration-300">{item.icon}</div>
-                <h3 className="text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors">
-                  {item.title}
-                </h3>
-                <p className="text-gray-400 text-base leading-relaxed">
-                  {item.desc}
-                </p>
+            { icon: DollarSign, title: "Trading Capital", desc: "Use CAT tokens as trading capital for AI-powered trading strategies" },
+            { icon: LockKeyhole, title: "Staking Rewards", desc: "Stake tokens to earn CAT and access trading credit upfront" },
+            { icon: Rocket, title: "Platform Access", desc: "Access premium features, AI bots marketplace, and exclusive tools" }
+          ].map((item, index) => {
+            const IconComponent = item.icon;
+            return (
+              <div
+                key={index}
+                className="group relative bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] rounded-3xl p-8 md:p-10 border-2 border-[#FFFF02]/20 hover:border-[#FFFF02] transition-all duration-500 hover:shadow-2xl hover:shadow-[#FFFF02]/30 hover:-translate-y-3 overflow-hidden"
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br from-[#FFFF02]/10 via-transparent to-[#FFFF02]/10"></div>
+                <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-500"></div>
+                
+                <div className="relative z-10">
+                  <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
+                    <IconComponent className="w-16 h-16 md:w-20 md:h-20 text-[#FFFF02]" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold text-white mb-4 group-hover:text-[#FFFF02] transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-gray-400 text-base leading-relaxed">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

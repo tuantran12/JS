@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,7 +24,7 @@ export function TradingPairsTable() {
   const { selectedTimeframe, setSelectedTimeframe, isRefreshing, setIsRefreshing } = useAppStore();
   const [lastUpdate, setLastUpdate] = useState<number>(Date.now());
 
-  const fetchPairs = async () => {
+  const fetchPairs = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -40,14 +40,14 @@ export function TradingPairsTable() {
       setLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [setIsRefreshing]);
 
   useEffect(() => {
     fetchPairs();
     // Auto-refresh every 10 seconds
     const interval = setInterval(fetchPairs, 10000);
     return () => clearInterval(interval);
-  }, [selectedTimeframe]);
+  }, [selectedTimeframe, fetchPairs]);
 
   const handleRefresh = () => {
     fetchPairs();

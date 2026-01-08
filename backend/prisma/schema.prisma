@@ -1,0 +1,221 @@
+// Prisma Schema for Blowfi AI Agent - SQLite Compatible
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(cuid())
+  privyUserId      String?  @unique @map("privy_user_id")
+  walletAddress    String   @unique @map("wallet_address")
+  email            String?  @unique
+  referralCode     String   @unique @map("referral_code")
+  referredBy       String?  @map("referred_by")
+  dlowPoints       Int      @default(0) @map("dlow_points")
+  autoTradeEnabled Boolean  @default(true) @map("auto_trade_enabled")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  subscriptions   Subscription[]
+  stakes          Stake[]
+  transactions    Transaction[]
+  referralsGiven  Referral[]       @relation("Referrer")
+  referralUsed    Referral?        @relation("Referred")
+  unstakeRequests UnstakeRequest[]
+  follows         UserFollow[]
+  positions       Position[]
+  simSessions     SimSession[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id           String   @id @default(cuid())
+  userId       String   @map("user_id")
+  packageName  String   @map("package_name")
+  packageType  String   @map("package_type")
+  priceUsd     Float    @map("price_usd")
+  priceSol     Float    @map("price_sol")
+  paymentToken String   @map("payment_token")
+  txSignature  String   @map("tx_signature")
+  dlowAwarded  Int      @map("dlow_awarded")
+  status       String   @default("active")
+  startDate    DateTime @default(now()) @map("start_date")
+  endDate      DateTime @map("end_date")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Stake {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  token         String
+  amount        Float
+  stakeType     String    @map("stake_type")
+  apr           Float
+  txSignature   String    @map("tx_signature")
+  status        String    @default("active")
+  stakedAt      DateTime  @default(now()) @map("staked_at")
+  unlockDate    DateTime? @map("unlock_date")
+  currentReward Float     @default(0) @map("current_reward")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+
+  user            User             @relation(fields: [userId], references: [id])
+  unstakeRequests UnstakeRequest[]
+
+  @@map("stakes")
+}
+
+model UnstakeRequest {
+  id          String    @id @default(cuid())
+  stakeId     String    @map("stake_id")
+  userId      String    @map("user_id")
+  amount      Float
+  reward      Float
+  token       String
+  penalty     Float     @default(0)
+  immediate   Boolean   @default(false)
+  status      String    @default("pending")
+  requestedAt DateTime  @default(now()) @map("requested_at")
+  unlockAt    DateTime  @map("unlock_at")
+  claimedAt   DateTime? @map("claimed_at")
+  txSignature String?   @map("tx_signature")
+
+  stake Stake @relation(fields: [stakeId], references: [id])
+  user  User  @relation(fields: [userId], references: [id])
+
+  @@map("unstake_requests")
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  type        String
+  token       String
+  amount      Float
+  txSignature String?  @map("tx_signature")
+  description String?
+  metadata    String?  // JSON stored as string for SQLite
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, type])
+  @@map("transactions")
+}
+
+model SmartWallet {
+  id          String   @id @default(cuid())
+  address     String   @unique
+  avatarUrl   String?  @map("avatar_url")
+  tag         String?
+  roi30d      Float    @default(0) @map("roi_30d")
+  pnl30d      Float    @default(0) @map("pnl_30d")
+  winRate     Float    @default(0) @map("win_rate")
+  aum         Float    @default(0)
+  mdd30d      Float    @default(0) @map("mdd_30d")
+  followers   Int      @default(0)
+  sparkline   String?  // JSON stored as string for SQLite
+  lastUpdated DateTime @default(now()) @map("last_updated")
+
+  followersRel UserFollow[]
+  positions    Position[]
+
+  @@map("smart_wallets")
+}
+
+model UserFollow {
+  id            String   @id @default(cuid())
+  userId        String   @map("user_id")
+  smartWalletId String   @map("smart_wallet_id")
+  mode          String   @default("live") // 'live' or 'sim'
+  slippage      Float    @default(0.5)
+  maxBuyUsd     Float?   @map("max_buy_usd")
+  sizePct       Float?   @map("size_pct")
+  minLiquidity  Float?   @map("min_liquidity")
+  minMcap       Float?   @map("min_mcap")
+  copyProtect   Boolean  @default(false) @map("copy_protect")
+  status        String   @default("active")
+  metadata      String?  // JSON stored as string for SQLite
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  user        User        @relation(fields: [userId], references: [id])
+  smartWallet SmartWallet @relation(fields: [smartWalletId], references: [id])
+
+  @@unique([userId, smartWalletId, mode])
+  @@map("user_follows")
+}
+
+model Position {
+  id            String    @id @default(cuid())
+  userId        String    @map("user_id")
+  smartWalletId String    @map("smart_wallet_id")
+  token         String
+  entryPrice    Float     @map("entry_price")
+  currentPrice  Float     @default(0) @map("current_price")
+  quantity      Float     @map("qty")
+  valueUsd      Float     @map("value_usd")
+  mode          String    @default("live") // 'live' or 'sim'
+  status        String    @default("open") // 'open', 'closed', 'partially_closed'
+  pnl           Float     @default(0)
+  openedAt      DateTime  @default(now()) @map("opened_at")
+  closedAt      DateTime? @map("closed_at")
+  txSignatures  String?   @map("tx_signatures") // JSON stored as string
+
+  user        User        @relation(fields: [userId], references: [id])
+  smartWallet SmartWallet @relation(fields: [smartWalletId], references: [id])
+
+  @@index([userId, status, mode])
+  @@map("positions")
+}
+
+model SimSession {
+  id        String    @id @default(cuid())
+  userId    String    @map("user_id")
+  startedAt DateTime  @default(now()) @map("started_at")
+  endedAt   DateTime? @map("ended_at")
+  dlowSpent Int       @default(0) @map("dlow_spent")
+  metadata  String?   // JSON stored as string
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("sim_sessions")
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerId     String   @map("referrer_id")
+  referredId     String   @unique @map("referred_id")
+  commissionRate Float    @default(0.10) @map("commission_rate")
+  totalEarned    Float    @default(0) @map("total_earned")
+  status         String   @default("active")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  referrer User @relation("Referrer", fields: [referrerId], references: [id])
+  referred User @relation("Referred", fields: [referredId], references: [id])
+
+  @@map("referrals")
+}
+
+model ContractProgram {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  programId String   @map("program_id")
+  network   String
+  idlHash   String?  @map("idl_hash")
+  isActive  Boolean  @default(true) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("contract_programs")
+}

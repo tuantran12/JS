@@ -80,7 +80,7 @@ function HeroSection() {
                 <div className="absolute inset-0 bg-[#FFFF02] blur-2xl opacity-0 group-hover:opacity-50 transition-opacity"></div>
               </Link>
               <Link
-                href="https://blowfi.com/white-paper"
+                href="/whitepaper"
                 className="px-10 py-5 border-2 border-[#FFFF02] text-[#FFFF02] font-bold text-lg rounded-xl hover:bg-[#FFFF02] hover:text-[#121212] transition-all backdrop-blur-sm bg-[#FFFF02]/5"
               >
                 White Paper

@@ -77,7 +77,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="https://blowfi.com/white-paper" className="text-gray-400 hover:text-[#FFFF02] transition-colors text-sm md:text-base">
+                <Link href="/whitepaper" className="text-gray-400 hover:text-[#FFFF02] transition-colors text-sm md:text-base">
                   White Paper
                 </Link>
               </li>

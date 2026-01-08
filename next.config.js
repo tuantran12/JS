@@ -12,7 +12,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'blowfi.com',
+        hostname: 'senkai.xyz',
+      },
+      {
+        protocol: 'https',
+        hostname: 'app.senkai.xyz',
       },
     ],
   },

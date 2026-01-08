@@ -35,8 +35,8 @@ export function Header() {
                 <span className="relative z-10">Analytics</span>
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#FFFF02] group-hover:w-full transition-all duration-300"></span>
               </Link>
-              <Link 
-                href="https://blowfi.com/white-paper" 
+              <Link
+                href="/whitepaper"
                 className="relative text-white font-semibold text-sm lg:text-base hover:text-[#FFFF02] transition-colors group"
               >
                 <span className="relative z-10">White Paper</span>
@@ -110,7 +110,7 @@ export function Header() {
             <Link href="/analytics" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               Analytics
             </Link>
-            <Link href="https://blowfi.com/white-paper" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
+            <Link href="/whitepaper" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">
               White Paper
             </Link>
             <Link href="#" className="text-white/70 hover:text-[#FFFF02] text-xs font-medium transition-colors">

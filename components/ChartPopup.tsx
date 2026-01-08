@@ -82,6 +82,10 @@ export function ChartPopup({ pair, onClose }: ChartPopupProps) {
         type: "volume",
       },
       priceScaleId: "",
+    });
+
+    // Configure volume series price scale margins
+    volumeSeries.priceScale().applyOptions({
       scaleMargins: {
         top: 0.8,
         bottom: 0,
@@ -174,9 +178,13 @@ export function ChartPopup({ pair, onClose }: ChartPopupProps) {
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <span>{pair.name}</span>
               {dataSource === "binance" || dataSource === "coingecko" ? (
-                <Wifi className="h-4 w-4 text-green-500" title={`Live data from ${dataSource}`} />
+                <span title={`Live data from ${dataSource}`}>
+                  <Wifi className="h-4 w-4 text-green-500" />
+                </span>
               ) : (
-                <WifiOff className="h-4 w-4 text-yellow-500" title="Simulated data" />
+                <span title="Simulated data">
+                  <WifiOff className="h-4 w-4 text-yellow-500" />
+                </span>
               )}
             </div>
             <div className="text-sm">

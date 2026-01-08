@@ -65,7 +65,7 @@ export default function WhitepaperPage() {
             that democratizes access to professional trading strategies and market insights.
           </p>
           <p className="text-gray-300 leading-relaxed mb-4">
-            Built on Solana's high-performance blockchain, SENKAI offers sub-second transaction finality,
+            Built on Solana&apos;s high-performance blockchain, SENKAI offers sub-second transaction finality,
             minimal fees, and the scalability required for real-time trading operations.
           </p>
           <ul className="list-disc list-inside text-gray-300 space-y-2">

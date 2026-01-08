@@ -3,8 +3,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
+import { usePathname } from "next/navigation";
+import { WalletButton } from "./WalletButton";
 
 export function Header() {
+  const pathname = usePathname();
+
+  // Detect if we're in platform (product app) routes
+  const isPlatform = pathname?.startsWith('/dashboard') ||
+                     pathname?.startsWith('/analytics') ||
+                     pathname?.startsWith('/chat') ||
+                     pathname?.startsWith('/copy-trading') ||
+                     pathname?.startsWith('/profile') ||
+                     pathname?.startsWith('/portfolio') ||
+                     pathname?.startsWith('/swap') ||
+                     pathname?.startsWith('/notifications');
   return (
     <>
       {/* Desktop Header - Always Dark Mode */}
@@ -66,14 +79,19 @@ export function Header() {
               >
                 linktr.ee/senkai
               </Link>
-              <Link
-                href="https://app.senkai.xyz/"
-                className="relative px-6 py-2.5 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-sm rounded-lg overflow-hidden group"
-              >
-                <span className="relative z-10">Launch App</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FFFF33] to-[#FFFF02] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <div className="absolute inset-0 bg-[#FFFF02] blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
-              </Link>
+
+              {isPlatform ? (
+                <WalletButton />
+              ) : (
+                <Link
+                  href="/dashboard"
+                  className="relative px-6 py-2.5 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-sm rounded-lg overflow-hidden group"
+                >
+                  <span className="relative z-10">Launch App</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFFF33] to-[#FFFF02] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="absolute inset-0 bg-[#FFFF02] blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300"></div>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -93,12 +111,17 @@ export function Header() {
                 priority
               />
             </Link>
-            <Link
-              href="https://app.senkai.xyz/"
-              className="px-4 py-2 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-xs rounded-lg"
-            >
-              Launch
-            </Link>
+
+            {isPlatform ? (
+              <WalletButton />
+            ) : (
+              <Link
+                href="/dashboard"
+                className="px-4 py-2 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-xs rounded-lg"
+              >
+                Launch
+              </Link>
+            )}
           </div>
         </div>
       </header>

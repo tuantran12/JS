@@ -72,7 +72,7 @@ export function Footer() {
             <h3 className="text-white font-bold text-lg md:text-xl">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <Link href="https://app.senkai.xyz/" className="text-gray-400 hover:text-[#FFFF02] transition-colors text-sm md:text-base">
+                <Link href="/dashboard" className="text-gray-400 hover:text-[#FFFF02] transition-colors text-sm md:text-base">
                   Launch App
                 </Link>
               </li>

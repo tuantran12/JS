@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    const host = request.headers.get('host') || '';
-    const url = request.nextUrl.clone();
-
-  // Redirect root domain senkai.xyz to app.senkai.xyz
-  if (host === 'senkai.xyz' || host === 'www.senkai.xyz') {
-        url.host = 'app.senkai.xyz';
-        return NextResponse.redirect(url, { status: 301 });
-  }
+  // Middleware disabled - configure domain redirects based on your setup
+  // Example: Redirect root domain to subdomain
+  // const host = request.headers.get('host') || '';
+  // const url = request.nextUrl.clone();
+  // if (host === 'yourdomain.com' || host === 'www.yourdomain.com') {
+  //   url.host = 'app.yourdomain.com';
+  //   return NextResponse.redirect(url, { status: 301 });
+  // }
 
   return NextResponse.next();
 }

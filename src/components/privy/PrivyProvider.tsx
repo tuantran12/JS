@@ -1,5 +1,5 @@
 'use client';
-import { PrivyProvider as BasePrivyProvider } from '@privy-io/react-auth';
+import { PrivyProvider as BasePrivyProvider, PrivyClientConfig } from '@privy-io/react-auth';
 import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana';
 import { ReactNode, useMemo } from 'react';
 
@@ -16,21 +16,21 @@ export default function PrivyProvider({ children }: Props) {
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID || '';
 
   // Memoize config to prevent unnecessary re-renders
-  const config = useMemo(() => ({
-    loginMethods: ['wallet', 'email'] as const,
+  const config: PrivyClientConfig = useMemo(() => ({
+    loginMethods: ['wallet', 'email'],
     appearance: {
-      theme: 'dark' as const,
+      theme: 'dark',
       accentColor: '#a855f7',
       showWalletLoginFirst: true
     },
     embeddedWallets: {
-      createOnLogin: 'all-users' as const,
+      createOnLogin: 'all-users',
       requireUserPasswordOnCreate: false
     },
     externalWallets: {
       solana: { connectors: solanaConnectors }
     },
-    walletChainType: 'solana-only' as const
+    walletChainType: 'solana-only'
   }), []);
 
   if (!appId) {

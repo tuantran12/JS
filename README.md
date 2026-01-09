@@ -1,4 +1,4 @@
-# 🚀 BLOWFI - Web3 Copy Trading Platform
+# 🚀 SENKAI - Web3 Copy Trading Platform
 
 A comprehensive Web3-based copy trading platform on Solana, featuring Privy wallet integration, auto-trading, and social trading features.
 

@@ -1,7 +1,7 @@
-# Script to push BLOWFI project to GitHub
+# Script to push SENKAI project to GitHub
 # Usage: .\push-to-github.ps1
 
-Write-Host "🚀 Pushing BLOWFI Project to GitHub..." -ForegroundColor Cyan
+Write-Host "🚀 Pushing SENKAI Project to GitHub..." -ForegroundColor Cyan
 Write-Host ""
 
 # Navigate to project directory
@@ -58,7 +58,7 @@ Write-Host ""
 
 # Commit
 Write-Host "💾 Committing changes..." -ForegroundColor Yellow
-$commitMessage = "Initial commit: BLOWFI Web3 Platform
+$commitMessage = "Initial commit: SENKAI Web3 Platform
 
 - Frontend: Next.js 14 with Privy integration
 - Backend: Express.js API server  

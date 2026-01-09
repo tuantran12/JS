@@ -315,7 +315,7 @@ export default function WalletPage() {
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Add funds to your BLOWFI wallet</h3>
+              <h3>Add funds to your SENKAI wallet</h3>
               <button onClick={closeModal} className="close-btn">×</button>
             </div>
 

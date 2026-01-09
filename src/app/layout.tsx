@@ -5,7 +5,7 @@ import AuthGuard from '../components/privy/AuthGuard';
 import Header from '../components/layout/Header';
 
 export const metadata: Metadata = {
-  title: 'Blowfi - AI Copy Trading Platform',
+  title: 'Senkai - AI Copy Trading Platform',
   description: 'AI-powered copy trading on Solana with 24/7 auto-execution'
 };
 

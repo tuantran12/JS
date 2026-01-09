@@ -1,6 +1,6 @@
-# 🚀 Deployment Guide - BLOWFI Platform
+# 🚀 Deployment Guide - SENKAI Platform
 
-Hướng dẫn chi tiết deploy BLOWFI lên Vercel và GitHub.
+Hướng dẫn chi tiết deploy SENKAI lên Vercel và GitHub.
 
 ## 📋 Mục lục
 
@@ -61,7 +61,7 @@ Nếu build thành công → ✅ Sẵn sàng deploy!
 # Trong thư mục project/
 git init
 git add .
-git commit -m "Initial commit: BLOWFI platform"
+git commit -m "Initial commit: SENKAI platform"
 git branch -M main
 git remote add origin https://github.com/tuantran12/JS.git
 git push -u origin main
@@ -108,7 +108,7 @@ vercel
 # ? Set up and deploy? Y
 # ? Which scope? (Select your account)
 # ? Link to existing project? N
-# ? What's your project's name? blowfi-frontend
+# ? What's your project's name? senkai-frontend
 # ? In which directory is your code located? ./
 # ? Want to override the settings? N
 
@@ -192,7 +192,7 @@ nano .env  # Edit environment variables
 npm install -g pm2
 
 # Start backend
-pm2 start src/index.js --name blowfi-backend
+pm2 start src/index.js --name senkai-backend
 pm2 save
 pm2 startup
 ```
@@ -251,7 +251,7 @@ git branch -M main
 git add .
 
 # Commit
-git commit -m "Initial commit: BLOWFI Web3 Platform"
+git commit -m "Initial commit: SENKAI Web3 Platform"
 
 # Add remote (nếu chưa có)
 git remote add origin https://github.com/tuantran12/JS.git

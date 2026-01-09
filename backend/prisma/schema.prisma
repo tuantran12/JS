@@ -1,4 +1,4 @@
-// Prisma Schema for Blowfi AI Agent - SQLite Compatible
+// Prisma Schema for Senkai AI Agent - SQLite Compatible
 
 generator client {
   provider = "prisma-client-js"

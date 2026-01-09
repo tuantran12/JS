@@ -33,7 +33,7 @@ export default function StakePage() {
 
   const privyWallet = wallets.find(w => w.walletClientType === 'privy');
   const walletAddress = privyWallet?.address || '';
-  const authToken = typeof window !== 'undefined' ? localStorage.getItem('blowfi_token') || '' : '';
+  const authToken = typeof window !== 'undefined' ? localStorage.getItem('senkai_token') || '' : '';
 
   const fetchBalances = useCallback(async () => {
     if (!walletAddress) return;

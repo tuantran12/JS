@@ -7,7 +7,7 @@ export default function ReferralPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
 
-  const walletAddress = typeof window !== 'undefined' ? localStorage.getItem('blowfi_wallet') || '' : '';
+  const walletAddress = typeof window !== 'undefined' ? localStorage.getItem('senkai_wallet') || '' : '';
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
 
   const fetchData = useCallback(async () => {

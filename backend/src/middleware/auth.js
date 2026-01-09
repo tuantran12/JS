@@ -1,6 +1,6 @@
 ﻿const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'blowfi-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'senkai-secret-key-change-in-production';
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;

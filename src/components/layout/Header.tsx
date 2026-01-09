@@ -31,7 +31,7 @@ export default function Header() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('blowfi_user');
+      const stored = localStorage.getItem('senkai_user');
       if (stored) {
         try { setUserData(JSON.parse(stored)); } catch {}
       }
@@ -79,9 +79,9 @@ export default function Header() {
   }, [showDropdown]);
 
   const handleLogout = async () => {
-    localStorage.removeItem('blowfi_token');
-    localStorage.removeItem('blowfi_wallet');
-    localStorage.removeItem('blowfi_user');
+    localStorage.removeItem('senkai_token');
+    localStorage.removeItem('senkai_wallet');
+    localStorage.removeItem('senkai_user');
     setShowDropdown(false);
     await logout();
     window.location.href = '/';
@@ -107,7 +107,7 @@ export default function Header() {
   const referralCode = userData?.referralCode || user?.id?.slice(-8) || '0x1587c9';
   const referralLink = typeof window !== 'undefined' 
     ? `${window.location.origin}/invite/${referralCode}`
-    : `https://blowfi.com/invite/${referralCode}`;
+    : `https://senkai.com/invite/${referralCode}`;
 
   const copyReferralLink = async () => {
     try {
@@ -129,7 +129,7 @@ export default function Header() {
   return (
     <>
       <header className="header">
-        <Link href="/" className="logo">BLOWFI</Link>
+        <Link href="/" className="logo">SENKAI</Link>
 
         <nav className="nav">
           {NAV_ITEMS.map(item => (

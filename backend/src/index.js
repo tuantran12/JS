@@ -46,7 +46,7 @@ app.use((err, req, res, next) => {
 process.on('SIGINT', async () => { await prisma.$disconnect(); process.exit(0); });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Blowfi Backend running on port ${PORT}`);
+  console.log(`🚀 Senkai Backend running on port ${PORT}`);
 });
 
 module.exports = app;

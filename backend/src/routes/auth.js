@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const nacl = require('tweetnacl');
 const bs58 = require('bs58');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'blowfi-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'senkai-secret-key-change-in-production';
 const TOKEN_EXPIRY = '7d';
 
 // Nonce store (use Redis in production)
@@ -13,7 +13,7 @@ const nonceStore = new Map();
 // GET /api/auth/nonce - Get nonce for signing
 router.get('/nonce/:address', (req, res) => {
   const { address } = req.params;
-  const nonce = `Sign this message to authenticate with Blowfi: ${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const nonce = `Sign this message to authenticate with Senkai: ${Date.now()}-${Math.random().toString(36).slice(2)}`;
   nonceStore.set(address, { nonce, createdAt: Date.now() });
   res.json({ nonce });
 });

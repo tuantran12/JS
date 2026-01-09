@@ -1,6 +1,6 @@
-# 🚀 BLOWFI Backend API
+# 🚀 SENKAI Backend API
 
-Express.js backend for BLOWFI platform with Privy wallet integration, Solana blockchain, and auto-trading features.
+Express.js backend for SENKAI platform with Privy wallet integration, Solana blockchain, and auto-trading features.
 
 ## 📦 Tech Stack
 

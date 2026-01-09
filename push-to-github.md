@@ -39,7 +39,7 @@ git remote set-url origin https://github.com/tuantran12/JS.git
 git add .
 
 # Commit với message
-git commit -m "Initial commit: BLOWFI Web3 Platform
+git commit -m "Initial commit: SENKAI Web3 Platform
 
 - Frontend: Next.js 14 with Privy integration
 - Backend: Express.js API server

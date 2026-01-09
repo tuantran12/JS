@@ -67,9 +67,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           const result = await authenticateWithPrivy(walletAddress, referralCode, privyUserId);
 
           if (result.token) {
-            localStorage.setItem('blowfi_token', result.token);
-            localStorage.setItem('blowfi_wallet', walletAddress);
-            localStorage.setItem('blowfi_user', JSON.stringify(result.user));
+            localStorage.setItem('senkai_token', result.token);
+            localStorage.setItem('senkai_wallet', walletAddress);
+            localStorage.setItem('senkai_user', JSON.stringify(result.user));
             setAuthStatus('authenticated');
           } else {
             setError(result.error || 'Authentication failed');
@@ -77,7 +77,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
           }
         } catch (e: any) {
           console.error('Auth error:', e);
-          localStorage.setItem('blowfi_wallet', walletAddress);
+          localStorage.setItem('senkai_wallet', walletAddress);
           setAuthStatus('authenticated');
         }
       };
@@ -99,9 +99,9 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }, [authenticated, login]);
 
   const handleLogout = useCallback(async () => {
-    localStorage.removeItem('blowfi_token');
-    localStorage.removeItem('blowfi_wallet');
-    localStorage.removeItem('blowfi_user');
+    localStorage.removeItem('senkai_token');
+    localStorage.removeItem('senkai_wallet');
+    localStorage.removeItem('senkai_user');
     authAttempted.current = false;
     walletCreationAttempted.current = false;
     await logout();
@@ -133,7 +133,7 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   if (authStatus === 'unauthenticated') {
     return (
       <div className="auth-screen">
-        <h1 className="logo">BLOWFI</h1>
+        <h1 className="logo">SENKAI</h1>
         <p className="tagline">AI-Powered Copy Trading on Solana</p>
         
         {error && <div className="error">{error}</div>}

@@ -1,4 +1,4 @@
-# 🚀 Hướng dẫn Deploy BLOWFI lên Vercel và GitHub
+# 🚀 Hướng dẫn Deploy SENKAI lên Vercel và GitHub
 
 ## 📋 Tổng quan
 
@@ -74,7 +74,7 @@ git remote add origin https://github.com/tuantran12/JS.git
 
 # Add và commit
 git add .
-git commit -m "Initial commit: BLOWFI Web3 Platform"
+git commit -m "Initial commit: SENKAI Web3 Platform"
 
 # Push
 git push -u origin main

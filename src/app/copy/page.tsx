@@ -32,7 +32,7 @@ export default function CopyPage() {
   const [closeModalOpen, setCloseModalOpen] = useState(false);
   const [positionToClose, setPositionToClose] = useState<any>(null);
 
-  const token = typeof window !== 'undefined' ? localStorage.getItem('blowfi_token') || '' : '';
+  const token = typeof window !== 'undefined' ? localStorage.getItem('senkai_token') || '' : '';
 
   const refresh = useCallback(async () => {
     setLoading(true);

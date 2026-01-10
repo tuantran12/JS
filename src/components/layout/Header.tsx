@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { Home, Wallet, TrendingUp, Coins, Users } from 'lucide-react';
 
 const NAV_ITEMS = [
   { href: '/copy', label: 'Social Trader' },
@@ -38,17 +39,27 @@ export default function Header() {
     }
   }, []);
 
-  // Fetch SOL balance
+  // Fetch SOL balance with validation
   const fetchSolBalance = useCallback(async () => {
     if (!walletAddress) return;
-    
+
     try {
+      // Validate wallet address before using
+      if (!walletAddress || walletAddress.length < 32) {
+        console.error('Invalid wallet address format');
+        setSolBalance(0);
+        return;
+      }
+
       const connection = new Connection(RPC_URL);
       const pubkey = new PublicKey(walletAddress);
       const balance = await connection.getBalance(pubkey);
       setSolBalance(balance / LAMPORTS_PER_SOL);
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error fetching SOL balance:', e);
+      if (e.message?.includes('Invalid public key')) {
+        console.error('Wallet address validation failed');
+      }
       setSolBalance(0);
     }
   }, [walletAddress]);
@@ -301,6 +312,30 @@ export default function Header() {
           )}
         </div>
       </header>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="mobile-bottom-nav">
+        <Link href="/" className={`mobile-nav-item ${pathname === '/' ? 'active' : ''}`}>
+          <Home />
+          <span className="mobile-nav-label">Home</span>
+        </Link>
+        <Link href="/wallet" className={`mobile-nav-item ${pathname === '/wallet' ? 'active' : ''}`}>
+          <Wallet />
+          <span className="mobile-nav-label">Wallet</span>
+        </Link>
+        <Link href="/copy" className={`mobile-nav-item ${pathname === '/copy' ? 'active' : ''}`}>
+          <TrendingUp />
+          <span className="mobile-nav-label">Copy</span>
+        </Link>
+        <Link href="/stake" className={`mobile-nav-item ${pathname === '/stake' ? 'active' : ''}`}>
+          <Coins />
+          <span className="mobile-nav-label">Stake</span>
+        </Link>
+        <Link href="/referral" className={`mobile-nav-item ${pathname === '/referral' ? 'active' : ''}`}>
+          <Users />
+          <span className="mobile-nav-label">Referral</span>
+        </Link>
+      </nav>
 
       {/* Copied Toast */}
       {(copied || refCopied) && (
@@ -735,10 +770,66 @@ export default function Header() {
             padding: 0 16px;
             height: 56px;
           }
-          
+
+          .nav {
+            display: none;
+          }
+
           .wallet-dropdown {
             width: 360px;
             right: -16px;
+          }
+        }
+
+        /* Mobile Bottom Navigation */
+        .mobile-bottom-nav {
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: #000;
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 16px;
+            z-index: 1000;
+          }
+
+          .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 12px;
+            text-decoration: none;
+            color: #666;
+            transition: all 0.2s;
+            border-radius: 8px;
+          }
+
+          .mobile-nav-item:hover {
+            color: #fff;
+          }
+
+          .mobile-nav-item.active {
+            color: #fff;
+          }
+
+          .mobile-nav-item svg {
+            width: 20px;
+            height: 20px;
+          }
+
+          .mobile-nav-label {
+            font-size: 11px;
+            font-weight: 500;
           }
         }
       `}</style>

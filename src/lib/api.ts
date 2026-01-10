@@ -4,14 +4,70 @@
 
 const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
 
+// ==================== FETCH HELPERS ====================
+
+/**
+ * Fetch with timeout
+ */
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 5000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error: any) {
+    clearTimeout(id);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+    throw error;
+  }
+}
+
+/**
+ * Retry logic with exponential backoff
+ */
+async function fetchWithRetry(url: string, options: RequestInit = {}, maxRetries = 3): Promise<Response> {
+  let lastError: Error | null = null;
+
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const response = await fetchWithTimeout(url, options);
+      return response;
+    } catch (error: any) {
+      lastError = error;
+      console.warn(`Fetch attempt ${i + 1} failed:`, error.message);
+
+      if (i < maxRetries - 1) {
+        // Exponential backoff: 2s, 4s, 8s
+        const delay = Math.pow(2, i + 1) * 1000;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+
+  throw lastError || new Error('Failed to fetch after retries');
+}
+
 // ==================== AUTH ====================
 export async function authenticateWithPrivy(walletAddress: string, referralCode?: string, privyUserId?: string) {
-  const res = await fetch(`${API_URL}/api/auth/privy`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ walletAddress, referralCode, privyUserId })
-  });
-  return res.json();
+  try {
+    const res = await fetchWithRetry(`${API_URL}/api/auth/privy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ walletAddress, referralCode, privyUserId })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  } catch (error: any) {
+    console.error('authenticateWithPrivy error:', error);
+    throw error;
+  }
 }
 
 export async function toggleAutoTrade(token: string, enabled: boolean) {
@@ -25,9 +81,14 @@ export async function toggleAutoTrade(token: string, enabled: boolean) {
 
 // ==================== USERS ====================
 export async function getUserData(walletAddress: string) {
-  const res = await fetch(`${API_URL}/api/users/${walletAddress}`);
-  if (!res.ok) return null;
-  return res.json();
+  try {
+    const res = await fetchWithRetry(`${API_URL}/api/users/${walletAddress}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error: any) {
+    console.error('getUserData error:', error);
+    return null;
+  }
 }
 
 export async function getUserStats(walletAddress: string) {
@@ -133,11 +194,17 @@ export async function listSmartWallets(token: string, opts: { search?: string; s
   if (opts.sort) params.set('sort', opts.sort);
   if (opts.tag) params.set('tag', opts.tag);
   if (opts.period) params.set('period', opts.period);
-  
-  const res = await fetch(`${API_URL}/api/copy/smart-wallets?${params.toString()}`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {}
-  });
-  return res.json();
+
+  try {
+    const res = await fetchWithRetry(`${API_URL}/api/copy/smart-wallets?${params.toString()}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  } catch (error: any) {
+    console.error('listSmartWallets error:', error);
+    throw error;
+  }
 }
 
 export async function getSmartWalletDetail(token: string, id: string) {

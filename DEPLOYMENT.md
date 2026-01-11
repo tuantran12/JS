@@ -1,4 +1,5 @@
 # SENKAI Platform Deployment Guide
+<!-- Deployment trigger: Production deployment with consolidated fixes and environment variables -->
 
 Complete guide to deploy the SENKAI cryptocurrency trading platform to production.
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   Wallet,
@@ -71,7 +71,7 @@ export default function PortfolioPage() {
   const totalChange = 0; // TODO: Calculate from 24h data
   const totalChangePercent = totalValue > 0 ? (totalChange / totalValue) * 100 : 0;
 
-  const fetchWalletData = async () => {
+  const fetchWalletData = useCallback(async () => {
     if (!publicKey || !connected) {
       setLoading(false);
       return;
@@ -157,7 +157,7 @@ export default function PortfolioPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [publicKey, connected, connection, solPrice]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -167,7 +167,7 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     fetchWalletData();
-  }, [publicKey, connected]);
+  }, [fetchWalletData]);
 
   if (!connected) {
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   ArrowUpRight,
@@ -49,7 +49,7 @@ export default function TransactionsPage() {
   const [filter, setFilter] = useState<TransactionType | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     if (!publicKey || !connected) {
       setLoading(false);
       return;
@@ -95,7 +95,7 @@ export default function TransactionsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [publicKey, connected, connection]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -105,7 +105,7 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     fetchTransactions();
-  }, [publicKey, connected]);
+  }, [fetchTransactions]);
 
   const filteredTransactions = transactions.filter((tx) => {
     const matchesFilter = filter === "all" || tx.type === filter;

@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
+
+// Force dynamic rendering for all platform pages (wallet context needs client-side)
+export const dynamic = 'force-dynamic';
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";

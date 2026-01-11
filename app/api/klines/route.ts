@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { getBinanceKlines } from "@/lib/api";
 
+// Force dynamic rendering (uses request.url for params)
+export const dynamic = 'force-dynamic';
+
 // Map CoinGecko IDs to Binance symbols
 const SYMBOL_MAP: Record<string, string> = {
   "bitcoin": "BTCUSDT",

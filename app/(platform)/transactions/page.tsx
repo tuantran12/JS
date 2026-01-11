@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useState, useEffect, useCallback } from "react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   ArrowUpRight,
   ArrowDownLeft,
@@ -10,8 +10,11 @@ import {
   Calendar,
   Download,
   Search,
+  RefreshCw,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { getTransactionHistory } from "@/lib/wallet-utils";
 
 type TransactionType = "swap" | "copy_trade" | "receive" | "send";
 type TransactionStatus = "confirmed" | "pending" | "failed";
@@ -19,6 +22,7 @@ type TransactionStatus = "confirmed" | "pending" | "failed";
 interface Transaction {
   id: string;
   signature: string;
+  fullSignature: string;
   type: TransactionType;
   fromToken: string;
   toToken: string;
@@ -29,74 +33,79 @@ interface Transaction {
   fee: number;
 }
 
-const mockTransactions: Transaction[] = [
-  {
-    id: "1",
-    signature: "5Kx...jN9",
-    type: "swap",
-    fromToken: "SOL",
-    toToken: "USDC",
-    fromAmount: 2.5,
-    toAmount: 256.25,
-    status: "confirmed",
-    timestamp: new Date(Date.now() - 1000 * 60 * 30),
-    fee: 0.00005,
-  },
-  {
-    id: "2",
-    signature: "3Ly...mK2",
-    type: "copy_trade",
-    fromToken: "USDC",
-    toToken: "RAY",
-    fromAmount: 500,
-    toAmount: 154.32,
-    status: "confirmed",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2),
-    fee: 0.00005,
-  },
-  {
-    id: "3",
-    signature: "7Qw...pL5",
-    type: "swap",
-    fromToken: "RAY",
-    toToken: "SOL",
-    fromAmount: 100,
-    toAmount: 0.31,
-    status: "confirmed",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5),
-    fee: 0.00005,
-  },
-  {
-    id: "4",
-    signature: "9Rt...xM8",
-    type: "send",
-    fromToken: "SOL",
-    toToken: "SOL",
-    fromAmount: 1.0,
-    toAmount: 1.0,
-    status: "confirmed",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24),
-    fee: 0.00005,
-  },
-  {
-    id: "5",
-    signature: "2Nv...bK4",
-    type: "receive",
-    fromToken: "USDC",
-    toToken: "USDC",
-    fromAmount: 1000,
-    toAmount: 1000,
-    status: "confirmed",
-    timestamp: new Date(Date.now() - 1000 * 60 * 60 * 48),
-    fee: 0,
-  },
-];
+function parseTransactionType(tx: any): TransactionType {
+  // Simple heuristic - defaults to send for now
+  // Can be improved with proper transaction parsing
+  return "send";
+}
 
 export default function TransactionsPage() {
   const { connected, publicKey } = useWallet();
-  const [transactions, setTransactions] = useState(mockTransactions);
+  const { connection } = useConnection();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [filter, setFilter] = useState<TransactionType | "all">("all");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const fetchTransactions = useCallback(async () => {
+    if (!publicKey || !connected) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setError(null);
+      setLoading(true);
+
+      const txHistory = await getTransactionHistory(connection, publicKey, 20);
+
+      const parsedTxs: Transaction[] = txHistory.map((tx, index) => {
+        const signature = tx.signature;
+        const type = parseTransactionType(tx);
+        const timestamp = tx.blockTime ? new Date(tx.blockTime * 1000) : new Date();
+        const status: TransactionStatus = tx.err ? "failed" : "confirmed";
+
+        // Extract fee from transaction
+        let fee = 0;
+        if (tx.transaction?.meta?.fee) {
+          fee = tx.transaction.meta.fee / 1000000000; // Convert lamports to SOL
+        }
+
+        return {
+          id: index.toString(),
+          signature: signature.slice(0, 4) + "..." + signature.slice(-4),
+          fullSignature: signature,
+          type,
+          fromToken: "SOL",
+          toToken: "SOL",
+          fromAmount: 0, // Would need to parse transaction details
+          toAmount: 0,
+          status,
+          timestamp,
+          fee,
+        };
+      });
+
+      setTransactions(parsedTxs);
+    } catch (err: any) {
+      console.error("Error fetching transactions:", err);
+      setError(err.message || "Failed to load transactions");
+    } finally {
+      setLoading(false);
+    }
+  }, [publicKey, connected, connection]);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchTransactions();
+    setIsRefreshing(false);
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   const filteredTransactions = transactions.filter((tx) => {
     const matchesFilter = filter === "all" || tx.type === filter;
@@ -147,7 +156,7 @@ export default function TransactionsPage() {
     const csv = [
       ["Signature", "Type", "From", "To", "Amount From", "Amount To", "Fee", "Status", "Time"],
       ...filteredTransactions.map((tx) => [
-        tx.signature,
+        tx.fullSignature,
         getTypeLabel(tx.type),
         tx.fromToken,
         tx.toToken,
@@ -189,6 +198,36 @@ export default function TransactionsPage() {
     );
   }
 
+  if (loading && !isRefreshing) {
+    return (
+      <div className="min-h-screen bg-[#000000] text-white flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-16 w-16 text-[#FFFF02] mx-auto mb-4 animate-spin" />
+          <h2 className="text-2xl font-bold mb-2">Loading Transactions...</h2>
+          <p className="text-gray-400">Fetching transaction history</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#000000] text-white flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Error Loading Transactions</h2>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={handleRefresh}
+            className="inline-block px-6 py-3 bg-[#FFFF02] text-[#0a0a0a] font-bold rounded-lg hover:bg-[#FFFF33] transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#000000] text-white">
       {/* Header */}
@@ -205,6 +244,14 @@ export default function TransactionsPage() {
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="px-4 py-2 bg-[#FFFF02]/10 border border-[#FFFF02]/50 text-[#FFFF02] rounded-lg hover:bg-[#FFFF02]/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
+              >
+                <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
               <button
                 onClick={exportTransactions}
                 className="px-4 py-2 bg-[#FFFF02]/10 border border-[#FFFF02]/50 text-[#FFFF02] rounded-lg hover:bg-[#FFFF02]/20 transition-colors text-sm flex items-center gap-2"
@@ -264,8 +311,7 @@ export default function TransactionsPage() {
               <thead className="bg-[#0a0a0a] border-b border-[#FFFF02]/10">
                 <tr>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Type</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">From → To</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Amount</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Signature</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Fee</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Time</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-400">Status</th>
@@ -283,22 +329,12 @@ export default function TransactionsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-mono text-sm">
-                        {tx.fromToken} → {tx.toToken}
+                        {tx.signature}
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm">
-                        <div className="font-semibold font-mono">
-                          {tx.fromAmount} {tx.fromToken}
-                        </div>
-                        <div className="text-gray-500 font-mono">
-                          {tx.toAmount} {tx.toToken}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
                       <span className="text-sm font-mono text-gray-400">
-                        {tx.fee} SOL
+                        {tx.fee.toFixed(6)} SOL
                       </span>
                     </td>
                     <td className="px-6 py-4">
@@ -319,7 +355,7 @@ export default function TransactionsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <a
-                        href={`https://solscan.io/tx/${tx.signature}`}
+                        href={`https://solscan.io/tx/${tx.fullSignature}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#FFFF02] hover:text-[#FFFF33] transition-colors flex items-center gap-1 text-sm"
@@ -338,7 +374,11 @@ export default function TransactionsPage() {
             <div className="text-center py-16">
               <Calendar className="h-16 w-16 text-gray-600 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-gray-400 mb-2">No transactions found</h3>
-              <p className="text-gray-500">Try adjusting your filters</p>
+              <p className="text-gray-500">
+                {transactions.length === 0
+                  ? "Your wallet has no recent transactions"
+                  : "Try adjusting your filters"}
+              </p>
             </div>
           )}
         </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { useState, useEffect, useCallback } from "react";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import {
   Wallet,
   TrendingUp,
@@ -11,8 +11,10 @@ import {
   RefreshCw,
   Eye,
   EyeOff,
+  AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { getSolBalance, getTokenBalances } from "@/lib/wallet-utils";
 
 interface TokenHolding {
   mint: string;
@@ -26,69 +28,146 @@ interface TokenHolding {
   logoURI?: string;
 }
 
-// Mock data
-const mockHoldings: TokenHolding[] = [
-  {
-    mint: "So11111111111111111111111111111111111111112",
+// Token metadata mapping (can be expanded or fetched from token registry)
+const TOKEN_METADATA: Record<string, { symbol: string; name: string; logoURI?: string }> = {
+  "So11111111111111111111111111111111111111112": {
     symbol: "SOL",
     name: "Solana",
-    balance: 12.5,
-    decimals: 9,
-    usdValue: 1281.25,
-    price: 102.5,
-    change24h: 5.2,
     logoURI: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png"
   },
-  {
-    mint: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
     symbol: "USDC",
     name: "USD Coin",
-    balance: 5420.50,
-    decimals: 6,
-    usdValue: 5420.50,
-    price: 1.00,
-    change24h: 0.01,
     logoURI: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png"
   },
-  {
-    mint: "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R",
+  "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB": {
+    symbol: "USDT",
+    name: "Tether USD",
+    logoURI: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB/logo.svg"
+  },
+  "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R": {
     symbol: "RAY",
     name: "Raydium",
-    balance: 850.0,
-    decimals: 6,
-    usdValue: 2754.00,
-    price: 3.24,
-    change24h: -2.8,
     logoURI: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R/logo.png"
   },
-  {
-    mint: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
+  "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263": {
     symbol: "BONK",
     name: "Bonk",
-    balance: 15000000,
-    decimals: 5,
-    usdValue: 180.00,
-    price: 0.000012,
-    change24h: 12.5,
     logoURI: "https://arweave.net/hQiPZOsRZXGXBJd_82PhVdlM_hACsT_q6wqwf5cSY7I"
   },
-];
+};
 
 export default function PortfolioPage() {
   const { connected, publicKey } = useWallet();
+  const { connection } = useConnection();
   const [hideBalances, setHideBalances] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [holdings, setHoldings] = useState<TokenHolding[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [solPrice, setSolPrice] = useState(102.5); // Default price, can be fetched from API
 
-  const totalValue = mockHoldings.reduce((sum, holding) => sum + holding.usdValue, 0);
-  const totalChange = 324.50; // Mock 24h change
-  const totalChangePercent = (totalChange / (totalValue - totalChange)) * 100;
+  const totalValue = holdings.reduce((sum, holding) => sum + holding.usdValue, 0);
+  const totalChange = 0; // TODO: Calculate from 24h data
+  const totalChangePercent = totalValue > 0 ? (totalChange / totalValue) * 100 : 0;
+
+  const fetchWalletData = useCallback(async () => {
+    if (!publicKey || !connected) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setError(null);
+      setLoading(true);
+
+      // Fetch SOL balance
+      const solBalance = await getSolBalance(connection, publicKey);
+
+      // Fetch token balances
+      const tokens = await getTokenBalances(connection, publicKey);
+
+      // Fetch SOL price (can be replaced with actual API call)
+      let currentSolPrice = solPrice;
+      try {
+        const priceResponse = await fetch('/api/prices?symbol=SOL');
+        if (priceResponse.ok) {
+          const priceData = await priceResponse.json();
+          currentSolPrice = priceData.price || solPrice;
+          setSolPrice(currentSolPrice);
+        }
+      } catch (err) {
+        console.error("Error fetching SOL price:", err);
+      }
+
+      // Build holdings array
+      const newHoldings: TokenHolding[] = [];
+
+      // Add SOL
+      if (solBalance > 0) {
+        newHoldings.push({
+          mint: "So11111111111111111111111111111111111111112",
+          symbol: "SOL",
+          name: "Solana",
+          balance: solBalance,
+          decimals: 9,
+          usdValue: solBalance * currentSolPrice,
+          price: currentSolPrice,
+          change24h: 0, // TODO: Fetch from price API
+          logoURI: TOKEN_METADATA["So11111111111111111111111111111111111111112"]?.logoURI
+        });
+      }
+
+      // Add SPL tokens
+      for (const token of tokens) {
+        const metadata = TOKEN_METADATA[token.mint] || {
+          symbol: token.mint.slice(0, 4) + "...",
+          name: "Unknown Token",
+        };
+
+        // For USDC/USDT, price is ~$1
+        let tokenPrice = 0;
+        let tokenValue = 0;
+        if (metadata.symbol === "USDC" || metadata.symbol === "USDT") {
+          tokenPrice = 1.0;
+          tokenValue = token.balance * tokenPrice;
+        } else {
+          // TODO: Fetch token prices from API
+          tokenPrice = 0;
+          tokenValue = 0;
+        }
+
+        newHoldings.push({
+          mint: token.mint,
+          symbol: metadata.symbol,
+          name: metadata.name,
+          balance: token.balance,
+          decimals: token.decimals,
+          usdValue: tokenValue,
+          price: tokenPrice,
+          change24h: 0, // TODO: Fetch from price API
+          logoURI: metadata.logoURI
+        });
+      }
+
+      setHoldings(newHoldings);
+    } catch (err: any) {
+      console.error("Error fetching wallet data:", err);
+      setError(err.message || "Failed to load wallet data");
+    } finally {
+      setLoading(false);
+    }
+  }, [publicKey, connected, connection, solPrice]);
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await fetchWalletData();
     setIsRefreshing(false);
   };
+
+  useEffect(() => {
+    fetchWalletData();
+  }, [fetchWalletData]);
 
   if (!connected) {
     return (
@@ -105,6 +184,36 @@ export default function PortfolioPage() {
           >
             Go to Dashboard
           </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading && !isRefreshing) {
+    return (
+      <div className="min-h-screen bg-[#000000] text-white flex items-center justify-center">
+        <div className="text-center">
+          <RefreshCw className="h-16 w-16 text-[#FFFF02] mx-auto mb-4 animate-spin" />
+          <h2 className="text-2xl font-bold mb-2">Loading Portfolio...</h2>
+          <p className="text-gray-400">Fetching your wallet data</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#000000] text-white flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Error Loading Portfolio</h2>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <button
+            onClick={handleRefresh}
+            className="inline-block px-6 py-3 bg-[#FFFF02] text-[#0a0a0a] font-bold rounded-lg hover:bg-[#FFFF33] transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -186,7 +295,14 @@ export default function PortfolioPage() {
           </div>
 
           <div className="divide-y divide-[#FFFF02]/10">
-            {mockHoldings.map((holding) => (
+            {holdings.length === 0 ? (
+              <div className="p-12 text-center">
+                <Wallet className="h-16 w-16 text-gray-600 mx-auto mb-4" />
+                <h3 className="text-xl font-bold text-gray-400 mb-2">No Assets Found</h3>
+                <p className="text-gray-500">Your wallet appears to be empty</p>
+              </div>
+            ) : (
+              holdings.map((holding) => (
               <div
                 key={holding.mint}
                 className="p-6 hover:bg-[#FFFF02]/5 transition-colors"
@@ -245,7 +361,8 @@ export default function PortfolioPage() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
 

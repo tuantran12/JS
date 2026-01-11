@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey, Transaction, VersionedTransaction } from "@solana/web3.js";
 import {
@@ -76,7 +76,7 @@ export default function SwapPage() {
   };
 
   // Get quote from Jupiter
-  const getQuote = async () => {
+  const getQuote = useCallback(async () => {
     if (!fromAmount || parseFloat(fromAmount) <= 0) {
       setToAmount("");
       setQuote(null);
@@ -107,7 +107,7 @@ export default function SwapPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [fromAmount, fromToken, toToken, slippage]);
 
   // Execute swap
   const handleSwap = async () => {
@@ -183,7 +183,7 @@ export default function SwapPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [fromAmount, fromToken, toToken, slippage]);
+  }, [fromAmount, fromToken, toToken, slippage, getQuote]);
 
   return (
     <div className="min-h-screen bg-[#000000] text-white">

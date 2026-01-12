@@ -14,7 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { getTransactionHistory } from "@/lib/wallet-utils";
+import { getTransactionHistory, isValidSolanaAddress } from "@/lib/wallet-utils";
 
 type TransactionType = "swap" | "copy_trade" | "receive" | "send";
 type TransactionStatus = "confirmed" | "pending" | "failed";
@@ -51,6 +51,14 @@ export default function TransactionsPage() {
 
   const fetchTransactions = useCallback(async () => {
     if (!publicKey || !connected) {
+      setLoading(false);
+      return;
+    }
+
+    // Validate wallet address to prevent Non-base58 errors
+    if (!isValidSolanaAddress(publicKey.toString())) {
+      console.error('Invalid Solana wallet address:', publicKey.toString());
+      setError('Invalid wallet address. Please reconnect your wallet.');
       setLoading(false);
       return;
     }

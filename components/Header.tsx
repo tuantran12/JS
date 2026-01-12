@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
-import { WalletButton } from "./WalletButton";
+import { PrivyWalletButton } from "./PrivyWalletButton";
 
 export function Header() {
   const pathname = usePathname();
@@ -81,7 +81,7 @@ export function Header() {
               </Link>
 
               {isPlatform ? (
-                <WalletButton />
+                <PrivyWalletButton />
               ) : (
                 <Link
                   href="/dashboard"
@@ -113,7 +113,7 @@ export function Header() {
             </Link>
 
             {isPlatform ? (
-              <WalletButton />
+              <PrivyWalletButton />
             ) : (
               <Link
                 href="/dashboard"

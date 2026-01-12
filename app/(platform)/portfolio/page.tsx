@@ -14,7 +14,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { getSolBalance, getTokenBalances } from "@/lib/wallet-utils";
+import { getSolBalance, getTokenBalances, isValidSolanaAddress } from "@/lib/wallet-utils";
 
 interface TokenHolding {
   mint: string;
@@ -73,6 +73,14 @@ export default function PortfolioPage() {
 
   const fetchWalletData = useCallback(async () => {
     if (!publicKey || !connected) {
+      setLoading(false);
+      return;
+    }
+
+    // Validate wallet address to prevent Non-base58 errors
+    if (!isValidSolanaAddress(publicKey.toString())) {
+      console.error('Invalid Solana wallet address:', publicKey.toString());
+      setError('Invalid wallet address. Please reconnect your wallet.');
       setLoading(false);
       return;
     }

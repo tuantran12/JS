@@ -4,6 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "SENKAI - Crypto Analytics Platform",
@@ -19,15 +20,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased bg-[#000000] text-white">
-        <TooltipProvider>
-          <div className="relative min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </TooltipProvider>
+        <Providers>
+          <TooltipProvider>
+            <div className="relative min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </TooltipProvider>
+        </Providers>
       </body>
     </html>
   );

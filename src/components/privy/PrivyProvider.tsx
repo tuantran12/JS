@@ -45,8 +45,9 @@ export default function PrivyProvider({ children }: Props) {
       showWalletLoginFirst: true
     },
     embeddedWallets: {
-      createOnLogin: 'all-users',
-      requireUserPasswordOnCreate: false
+      solana: {
+        createOnLogin: 'all-users'
+      }
     },
     externalWallets: {
       solana: { connectors: solanaConnectors }

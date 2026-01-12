@@ -100,7 +100,7 @@ export default function WalletPage() {
     setProcessing(true);
     setError('');
     try {
-      await fundWallet(privyWallet.address, { cluster: { name: 'mainnet-beta' } });
+      await fundWallet({ address: privyWallet.address });
       setSuccess('Funding initiated');
       setTimeout(() => { fetchBalances(); setModal(null); }, 2000);
     } catch (e: any) {

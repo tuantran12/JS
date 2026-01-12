@@ -19,7 +19,7 @@ export function PrivyProvider({ children }: { children: ReactNode }) {
         appearance: {
           theme: "dark",
           accentColor: "#FFFF02",
-          logo: "https://senkai.xyz/logo.svg",
+          logo: "https://app.senkai.xyz/logo.svg",
         },
 
         // Login methods - email, wallet, social
@@ -34,8 +34,8 @@ export function PrivyProvider({ children }: { children: ReactNode }) {
 
         // Legal links
         legal: {
-          termsAndConditionsUrl: "https://senkai.xyz/terms",
-          privacyPolicyUrl: "https://senkai.xyz/privacy",
+          termsAndConditionsUrl: "https://app.senkai.xyz/terms",
+          privacyPolicyUrl: "https://app.senkai.xyz/privacy",
         },
       }}
     >

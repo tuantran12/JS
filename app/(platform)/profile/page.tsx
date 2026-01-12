@@ -27,7 +27,7 @@ export default function ProfilePage() {
 
   const mockApiKey = "sk_live_51Hx...jK9z";
   const mockReferralCode = "SENKAI-X7K9M";
-  const mockReferralLink = `https://senkai.xyz/ref/${mockReferralCode}`;
+  const mockReferralLink = `https://app.senkai.xyz/ref/${mockReferralCode}`;
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);

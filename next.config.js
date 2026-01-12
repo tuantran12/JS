@@ -9,7 +9,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'senkai.xyz',
+        hostname: 'app.senkai.xyz',
       },
       {
         protocol: 'https',
@@ -61,7 +61,7 @@ const nextConfig = {
 
   // Environment variables to expose to the browser
   env: {
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://senkai.xyz',
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'https://app.senkai.xyz',
     NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'SENKAI',
   },
 

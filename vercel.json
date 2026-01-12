@@ -7,7 +7,7 @@
   "regions": ["iad1"],
   "env": {
     "NODE_ENV": "production",
-    "NEXT_PUBLIC_APP_URL": "https://senkai.xyz",
+    "NEXT_PUBLIC_APP_URL": "https://app.senkai.xyz",
     "NEXT_PUBLIC_APP_NAME": "SENKAI"
   },
   "build": {

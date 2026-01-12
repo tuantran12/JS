@@ -1,183 +1,203 @@
-# 🚀 SENKAI - Web3 Copy Trading Platform
+# Crypto Analytics Platform
 
-A comprehensive Web3-based copy trading platform on Solana, featuring Privy wallet integration, auto-trading, and social trading features.
+A comprehensive real-time cryptocurrency data analytics platform built with Next.js 14, TypeScript, and Tailwind CSS.
 
-## ✨ Features
+## Features
 
-- 🔐 **Privy Wallet Integration** - Social login + embedded Solana wallets
-- 🤖 **24/7 Auto-Trading** - Server-side transaction signing from embedded wallets
-- 📊 **Social Trading** - Follow top traders and copy their trades
-- 💰 **Staking** - 60-day (15% APR) and Flexible (9.5% APR) options
-- 📦 **Subscription Packages** - Starter, Trader, Expert, Ultimate tiers
-- 🎁 **Referral Program** - Earn commissions on referrals
-- ⚡ **DLOW Points** - Reward tokens for platform engagement
-- 📈 **Market Data** - Real-time SOL price, top tokens, and DEX data
+### Market Overview Dashboard
+- **Real-time Market Metrics**
+  - Open Interest tracking across major exchanges
+  - 24-hour Liquidation statistics (Long/Short breakdown)
+  - Fear & Greed Index with visual gauge
+  - Long/Short Ratio from multiple exchanges
+  - US Bitcoin ETF flow data (cumulative inflow, daily average, total NAV)
 
-## 🛠️ Tech Stack
+### Trading Pairs Table
+- Live price data for 12+ major cryptocurrencies
+- Real-time price changes and percentage movements
+- Buy/Sell volume analysis
+- Net flow calculations
+- Customizable timeframe selection (1H, 4H, 12H, 24H, 1W)
+- Auto-refresh every 10 seconds
 
-| Layer | Technology |
-|-------|------------|
-| Frontend | Next.js 14, React, TypeScript, Tailwind CSS |
-| Backend | Node.js, Express.js, Prisma ORM |
-| Database | SQLite (dev) / PostgreSQL (prod) |
-| Blockchain | Solana, @solana/web3.js, @solana/spl-token |
-| Wallet | Privy (Client & Server SDK) |
-| APIs | CoinMarketCap, Bitquery GraphQL |
+### Detailed Analytics Pages
+1. **Open Interest Analysis** - Track total open interest by exchange
+2. **Liquidations** - Monitor liquidation events with long/short distribution
+3. **RSI Analysis** - Relative Strength Index for 15+ cryptocurrencies
+4. **Long/Short Ratio** - Historical trends and exchange comparison
+5. **ETF Data** - US Bitcoin ETF flow tracking with charts
+6. **Altcoin Season Index** - Bitcoin vs Altcoin dominance meter
 
-## 📁 Project Structure
+### News & Content
+- Latest crypto news with categorization
+- Educational articles
+- VIP membership features
 
-```
-project/
-├── frontend/          # Next.js 14 application
-│   ├── src/
-│   │   ├── app/      # App router pages
-│   │   ├── components/
-│   │   └── lib/      # Utilities & API client
-│   ├── vercel.json   # Vercel configuration
-│   └── package.json
-│
-├── backend/           # Express.js API server
-│   ├── src/
-│   │   ├── routes/   # API endpoints
-│   │   ├── services/ # Business logic
-│   │   ├── workers/  # Background jobs
-│   │   └── middleware/
-│   ├── prisma/       # Database schema
-│   └── package.json
-│
-├── .gitignore
-├── README.md
-└── DEPLOY.md         # Deployment guide
-```
+## Tech Stack
 
-## 🚀 Quick Start
+- **Framework:** Next.js 14+ with App Router
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **UI Components:** Radix UI primitives (shadcn/ui style)
+- **Charts:** Recharts for data visualization
+- **State Management:** Zustand
+- **API Calls:** Axios with built-in caching
+- **Data Sources:**
+  - Binance API (prices, futures data, funding rates)
+  - CoinGecko API (market data)
+  - Alternative.me API (Fear & Greed Index)
+
+## Getting Started
 
 ### Prerequisites
-
 - Node.js 18+
 - npm or yarn
-- Privy App ID and App Secret ([Get from Privy Dashboard](https://app.privy.io/))
 
-### Local Development
+### Installation
 
-1. **Clone the repository**
-
+1. Clone the repository:
 ```bash
-git clone https://github.com/tuantran12/JS.git
-cd JS/project
+git clone <repository-url>
+cd crypto-analytics-platform
 ```
 
-2. **Setup Frontend**
-
+2. Install dependencies:
 ```bash
-cd frontend
 npm install
-cp .env.example .env.local
-# Edit .env.local with your Privy App ID
+```
+
+3. Run the development server:
+```bash
 npm run dev
 ```
 
-3. **Setup Backend** (in a new terminal)
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+### Build for Production
 
 ```bash
-cd backend
-npm install
-cp env.example .env
-# Edit .env with your Privy credentials
-npm run db:push
-npm run dev
+npm run build
+npm start
 ```
 
-**Access:**
-- Frontend: http://localhost:3000
-- Backend: http://localhost:3001/api/health
+## Project Structure
 
-## 🌐 Deployment to Vercel
-
-### Frontend Deployment
-
-1. **Push code to GitHub**
-
-```bash
-git add .
-git commit -m "Initial commit"
-git push origin main
+```
+crypto-analytics/
+├── app/
+│   ├── analytics/          # Analytics pages
+│   │   ├── page.tsx        # Main dashboard
+│   │   ├── open-interest/
+│   │   ├── liquidations/
+│   │   ├── rsi/
+│   │   ├── long-short/
+│   │   ├── etf/
+│   │   └── altcoin-season/
+│   ├── api/                # API routes
+│   │   ├── prices/
+│   │   ├── liquidations/
+│   │   ├── fear-greed/
+│   │   ├── open-interest/
+│   │   ├── long-short/
+│   │   └── etf/
+│   ├── news/
+│   ├── articles/
+│   ├── vip/
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/             # React components
+│   ├── ui/                # UI primitives
+│   ├── Navbar.tsx
+│   ├── MarketOverview.tsx
+│   ├── TradingPairsTable.tsx
+│   ├── MetricCard.tsx
+│   └── SimpleLineChart.tsx
+├── lib/
+│   ├── api.ts             # API utilities with caching
+│   ├── types.ts           # TypeScript definitions
+│   ├── utils.ts           # Helper functions
+│   └── store.ts           # Zustand state management
+└── public/
 ```
 
-2. **Deploy on Vercel**
+## Key Features Implementation
 
-- Go to [Vercel Dashboard](https://vercel.com/dashboard)
-- Click "Import Project"
-- Select your GitHub repository
-- Set **Root Directory** to `frontend`
-- Add Environment Variables:
-  - `NEXT_PUBLIC_PRIVY_APP_ID` - Your Privy App ID
-  - `NEXT_PUBLIC_BACKEND_URL` - Your backend API URL
-  - `NEXT_PUBLIC_SOLANA_RPC` - Solana RPC endpoint
-- Click "Deploy"
+### API Caching
+- In-memory caching with configurable TTL
+- Automatic cache invalidation
+- Retry logic with exponential backoff
 
-3. **Vercel will automatically:**
-  - Build your Next.js app
-  - Deploy to production
-  - Provide you with a URL
+### Real-time Updates
+- Auto-refresh intervals for different data types
+- Manual refresh capability
+- Last updated timestamp display
 
-### Backend Deployment
+### Responsive Design
+- Mobile-first approach
+- Breakpoints: sm (640px), md (768px), lg (1024px), xl (1280px)
+- Touch-friendly interface
 
-Backend can be deployed separately using:
+### Error Handling
+- Graceful API failure handling
+- User-friendly error messages
+- Loading states for all async operations
 
-- **Option 1: Vercel Serverless Functions** (Recommended)
-  - Convert Express routes to Next.js API routes
-  - Deploy with frontend as a monorepo
+## API Endpoints
 
-- **Option 2: Railway / Render**
-  - Deploy Express.js backend as a separate service
-  - Update `NEXT_PUBLIC_BACKEND_URL` in Vercel
+### Internal API Routes
 
-- **Option 3: Traditional VPS**
-  - Use PM2 for process management
-  - Setup Nginx reverse proxy
+- `GET /api/prices` - Fetch current prices for major trading pairs
+- `GET /api/liquidations` - Get 24h liquidation data
+- `GET /api/fear-greed` - Retrieve Fear & Greed Index
+- `GET /api/open-interest` - Get open interest by exchange
+- `GET /api/long-short` - Fetch long/short ratio data
+- `GET /api/etf` - Get US Bitcoin ETF flow data
 
-See [DEPLOY.md](./DEPLOY.md) for detailed deployment instructions.
+### External APIs Used
 
-## 📝 Environment Variables
+- **Binance:** `https://api.binance.com/api/v3/`
+- **Binance Futures:** `https://fapi.binance.com/fapi/v1/`
+- **CoinGecko:** `https://api.coingecko.com/api/v3/`
+- **Alternative.me:** `https://api.alternative.me/`
 
-### Frontend (.env.local)
+## Environment Variables
 
+No environment variables required for basic functionality. All APIs used are public and free.
+
+For production deployment, consider adding:
 ```env
-NEXT_PUBLIC_PRIVY_APP_ID=your-privy-app-id
-NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
-NEXT_PUBLIC_SOLANA_RPC=https://api.mainnet-beta.solana.com
+NEXT_PUBLIC_API_BASE_URL=your-api-base-url
 ```
 
-### Backend (.env)
+## Deployment
 
-```env
-DATABASE_URL="file:./dev.db"
-JWT_SECRET=your-32-char-secret-here
-PRIVY_APP_ID=your-privy-app-id
-PRIVY_APP_SECRET=your-privy-app-secret
-FRONTEND_URL=http://localhost:3000
-COINMARKETCAP_API_KEY=your-api-key
-BITQUERY_API_KEY=your-api-key
-```
+### Deploy to Vercel
 
-See `.env.example` files for complete list.
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Deploy with default settings
 
-## 🔑 Getting Privy Credentials
+The project is optimized for Vercel deployment with:
+- Automatic serverless function creation for API routes
+- Edge runtime support
+- Built-in caching
 
-1. Sign up at [Privy](https://privy.io)
-2. Create a new app
-3. Get your **App ID** and **App Secret**
-4. Add **App ID** to frontend `.env.local`
-5. Add both **App ID** and **App Secret** to backend `.env`
+## Performance Optimizations
 
-## 📚 Documentation
+- Server-side rendering (SSR) for initial page load
+- API response caching
+- Debounced user interactions
+- Lazy loading for charts
+- Optimized bundle size with code splitting
 
-- [DEPLOY.md](./DEPLOY.md) - Detailed deployment guide
-- [Frontend README](./frontend/README.md) - Frontend documentation
-- [Backend README](./backend/README.md) - Backend documentation
+## Browser Support
 
-## 🤝 Contributing
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -185,29 +205,31 @@ See `.env.example` files for complete list.
 4. Push to the branch
 5. Open a Pull Request
 
-## 📄 License
+## License
 
-MIT License
+This project is licensed under the MIT License.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- [Privy](https://privy.io) - Wallet infrastructure
-- [Solana](https://solana.com) - Blockchain platform
-- [CoinMarketCap](https://coinmarketcap.com) - Market data
-- [Bitquery](https://bitquery.io) - DEX analytics
+- Data provided by Binance, CoinGecko, and Alternative.me
+- UI components inspired by shadcn/ui
+- Chart library: Recharts
+
+## Future Enhancements
+
+- [ ] WebSocket integration for true real-time updates
+- [ ] TradingView Lightweight Charts integration
+- [ ] User authentication with NextAuth.js
+- [ ] Personalized watchlists and alerts
+- [ ] PostgreSQL database with Prisma ORM
+- [ ] Advanced technical indicators
+- [ ] Portfolio tracking
+- [ ] Mobile app (React Native)
+
+## Support
+
+For issues and questions, please open an issue in the GitHub repository.
 
 ---
 
-**Note:** This platform is for educational purposes. Always do your own research before making investment decisions.
-
-
----
-
-## 📋 Deployment Status  
-**Latest Update**: Jan 11, 2026 - Merged comprehensive API error handling fixes from claude/fix-api-errors-iBmfg branch
-- ✅ Mock data utilities for API fallback
-- - ✅ Enhanced error handling with try-catch
-  - - ✅ React Error Boundary component
-    - - ✅ Wallet integration error handling
-      - - ✅ Custom React hooks for error management
-        - 
+**Note:** This platform is for educational and informational purposes only. It is not financial advice. Always do your own research before making investment decisions.

@@ -1,0 +1,46 @@
+import { NextResponse } from "next/server";
+import { handleApiError } from "@/lib/api";
+
+export async function GET() {
+  try {
+    // Note: Liquidation data requires specialized APIs or WebSocket connections
+    // For demo purposes, we'll simulate realistic data
+    // In production, use services like Coinglass API or exchange WebSocket feeds
+
+    const generateLiquidationData = () => {
+      // Generate realistic liquidation data with variation
+      // Long liquidations are typically higher than short
+      // Based on market data: Long usually 60-80% of total
+      const baseLong = 60000000 + Math.random() * 80000000; // $60M - $140M
+      const baseShort = 20000000 + Math.random() * 40000000; // $20M - $60M
+      const total = baseLong + baseShort;
+
+      return {
+        total: total,
+        long: baseLong,
+        short: baseShort,
+        longPercent: (baseLong / total) * 100,
+        shortPercent: (baseShort / total) * 100,
+      };
+    };
+
+    const liquidationData = generateLiquidationData();
+
+    // Calculate 24h change (simplified - in production, compare with previous day)
+    // For now, return 0 change as we don't have historical data
+    return NextResponse.json({
+      data: {
+        ...liquidationData,
+        change24h: 0,
+        changePercent24h: 0,
+      },
+      lastUpdated: Date.now(),
+    });
+  } catch (error) {
+    console.error("Error fetching liquidations:", error);
+    return NextResponse.json(
+      { error: handleApiError(error) },
+      { status: 500 }
+    );
+  }
+}

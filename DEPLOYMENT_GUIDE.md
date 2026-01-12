@@ -73,7 +73,7 @@ STRIPE_WEBHOOK_SECRET=whsec_****************************
 ### 🔗 App Configuration
 
 ```bash
-NEXT_PUBLIC_APP_URL=https://app.senkai.xyz
+NEXT_PUBLIC_APP_URL=https://senkai.xyz
 NEXT_PUBLIC_APP_NAME=SENKAI
 NODE_ENV=production
 ```
@@ -94,7 +94,7 @@ NEXT_PUBLIC_SOLANA_NETWORK=mainnet-beta
 ```bash
 JWT_SECRET=your_long_random_secret_minimum_32_chars
 NEXTAUTH_SECRET=your_nextauth_secret
-NEXTAUTH_URL=https://app.senkai.xyz
+NEXTAUTH_URL=https://senkai.xyz
 ```
 
 **Status:** Should already be set in Vercel (user configured)
@@ -157,7 +157,7 @@ vercel --prod --force --no-cache
 
 ```bash
 # Test that homepage loads
-curl -I https://app.senkai.xyz/
+curl -I https://senkai.xyz/
 
 # Expected: HTTP/2 200
 ```
@@ -166,17 +166,17 @@ curl -I https://app.senkai.xyz/
 
 ```bash
 # Test Fear & Greed API
-curl https://app.senkai.xyz/api/fear-greed
+curl https://senkai.xyz/api/fear-greed
 
 # Test Prices API
-curl https://app.senkai.xyz/api/prices?symbol=BTC
+curl https://senkai.xyz/api/prices?symbol=BTC
 
 # Expected: JSON response, not CORS error
 ```
 
 ### 3. Privy Authentication Test (Manual)
 
-1. **Open app in browser:** https://app.senkai.xyz/
+1. **Open app in browser:** https://senkai.xyz/
 2. **Click "Launch App"** → Should redirect to /dashboard
 3. **Click "Connect Wallet"** button in header
 4. **Verify Privy modal appears** with:
@@ -293,7 +293,7 @@ ls -la app/api/
 Deployment is successful when:
 
 - ✅ Build completes without errors
-- ✅ Homepage loads at https://app.senkai.xyz/
+- ✅ Homepage loads at https://senkai.xyz/
 - ✅ API routes return data (not 404 or CORS errors)
 - ✅ Privy authentication modal appears
 - ✅ Email login works

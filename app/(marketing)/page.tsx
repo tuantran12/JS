@@ -72,7 +72,7 @@ function HeroSection() {
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start pt-6">
               <Link
-                href="https://app.senkai.xyz/"
+                href="/dashboard"
                 className="group relative px-10 py-5 bg-gradient-to-r from-[#FFFF02] to-[#FFFF33] text-[#121212] font-bold text-lg rounded-xl overflow-hidden"
               >
                 <span className="relative z-10">Launch App</span>
@@ -372,7 +372,7 @@ function HowItWorksSection() {
               Connect your wallet and start automating now!
             </p>
             <Link
-              href="https://app.senkai.xyz/"
+              href="/dashboard"
               className="inline-block px-12 py-6 bg-[#121212] text-[#FFFF02] font-bold text-lg md:text-xl rounded-xl hover:bg-[#1a1a1a] transition-all transform hover:scale-105 shadow-xl relative group overflow-hidden"
             >
               <span className="relative z-10">Connect SENKAI for Trading</span>
@@ -536,7 +536,7 @@ function CTASection() {
             </p>
             <div className="flex flex-col sm:flex-row gap-5 justify-center">
               <Link
-                href="https://app.senkai.xyz/"
+                href="/dashboard"
                 className="group relative px-12 py-6 bg-[#121212] text-[#FFFF02] font-bold text-lg md:text-xl rounded-xl overflow-hidden"
               >
                 <span className="relative z-10">Start Trading with AI</span>

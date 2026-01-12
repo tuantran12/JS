@@ -2,15 +2,8 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    const host = request.headers.get('host') || '';
-    const url = request.nextUrl.clone();
-
-  // Redirect root domain senkai.xyz to app.senkai.xyz
-  if (host === 'senkai.xyz' || host === 'www.senkai.xyz') {
-        url.host = 'app.senkai.xyz';
-        return NextResponse.redirect(url, { status: 301 });
-  }
-
+  // Middleware for future use (e.g., authentication, redirects)
+  // Currently passes through all requests
   return NextResponse.next();
 }
 

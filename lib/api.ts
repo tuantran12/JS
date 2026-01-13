@@ -397,3 +397,192 @@ export function handleApiError(error: unknown): string {
 export function clearCache() {
   cache.clear();
 }
+
+// ==================== USER & TRANSACTION DATA ====================
+/**
+ * Get user data from backend API
+ */
+export async function getUserData(walletAddress: string) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/users/${walletAddress}`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (error: any) {
+    console.error('getUserData error:', error);
+    return null;
+  }
+}
+
+/**
+ * Get transaction history from backend API
+ */
+export async function getTransactions(walletAddress: string) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/transactions/${walletAddress}`, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+    if (!res.ok) return { transactions: [] };
+    return res.json();
+  } catch (error: any) {
+    console.error('getTransactions error:', error);
+    return { transactions: [] };
+  }
+}
+
+/**
+ * Purchase subscription package
+ */
+export async function purchaseSubscription(data: {
+  walletAddress: string;
+  packageName: string;
+  packageType: 'monthly' | 'yearly';
+  priceUsd: number;
+  paymentToken: string;
+  txSignature: string;
+}) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/subscriptions/purchase`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    return res.json();
+  } catch (error: any) {
+    console.error('purchaseSubscription error:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get current SOL price
+ */
+export async function getSOLPrice() {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/market/sol-price`);
+    return res.json();
+  } catch (error: any) {
+    console.error('getSOLPrice error:', error);
+    throw error;
+  }
+}
+
+// ==================== STAKES ====================
+/**
+ * Get user stakes
+ */
+export async function getStakes(walletAddress: string) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/stakes/${walletAddress}`);
+    return res.json();
+  } catch (error: any) {
+    console.error('getStakes error:', error);
+    return { stakes: [] };
+  }
+}
+
+/**
+ * Create a new stake
+ */
+export async function createStake(token: string, data: any) {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  const res = await fetch(`${API_URL}/api/stakes`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+/**
+ * Request to unstake
+ */
+export async function requestUnstake(token: string, data: any) {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  const res = await fetch(`${API_URL}/api/stakes/unstake`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+/**
+ * Claim unstaked tokens
+ */
+export async function claimUnstake(token: string, data: any) {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  const res = await fetch(`${API_URL}/api/stakes/claim`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+// ==================== REFERRALS ====================
+/**
+ * Get referral data for user
+ */
+export async function getReferralData(walletAddress: string) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/referrals/${walletAddress}`);
+    return res.json();
+  } catch (error: any) {
+    console.error('getReferralData error:', error);
+    return { referrals: [], totalRewards: 0 };
+  }
+}
+
+// ==================== COPY TRADING ====================
+/**
+ * Follow a smart wallet
+ */
+export async function followSmartWallet(token: string, smartWalletId: string, mode: 'live' | 'sim', settings: any = {}) {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  const res = await fetch(`${API_URL}/api/copy/follow`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ smartWalletId, mode, ...settings })
+  });
+  return res.json();
+}
+
+/**
+ * Close a position
+ */
+export async function closePosition(token: string, positionId: string, closePercent: number = 100) {
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+  const res = await fetch(`${API_URL}/api/copy/close-position`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({ positionId, closePercent })
+  });
+  return res.json();
+}
+
+/**
+ * Authenticate with Privy
+ */
+export async function authenticateWithPrivy(walletAddress: string, referralCode?: string, privyUserId?: string) {
+  try {
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || (typeof window !== 'undefined' ? window.location.origin : '');
+    const res = await fetch(`${API_URL}/api/auth/privy`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ walletAddress, referralCode, privyUserId })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  } catch (error: any) {
+    console.error('authenticateWithPrivy error:', error);
+    throw error;
+  }
+}
